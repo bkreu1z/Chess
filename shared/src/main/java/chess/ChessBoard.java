@@ -45,31 +45,25 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        for (int i = 0; i < 2; i++) {
-            int row;
-            ChessGame.TeamColor color;
-            if (i==0) {
-                row = 1;
-                color = ChessGame.TeamColor.WHITE;
-            }
-            else {
-                row = 8;
-                color = ChessGame.TeamColor.BLACK;
-            }
-            this.spaces[row][1].piece = new ChessPiece(color, ChessPiece.PieceType.ROOK);
-            this.spaces[row][2].piece = new ChessPiece(color, ChessPiece.PieceType.KNIGHT);
-            this.spaces[row][3].piece = new ChessPiece(color, ChessPiece.PieceType.BISHOP);
-            this.spaces[row][6].piece = new ChessPiece(color, ChessPiece.PieceType.BISHOP);
-            this.spaces[row][7].piece = new ChessPiece(color, ChessPiece.PieceType.KNIGHT);
-            this.spaces[row][8].piece = new ChessPiece(color, ChessPiece.PieceType.ROOK);
+        //spaces = ChessBoard();
+        ChessPiece.PieceType[] types = {ChessPiece.PieceType.ROOK,ChessPiece.PieceType.KNIGHT,ChessPiece.PieceType.BISHOP};
+        ChessGame.TeamColor white = ChessGame.TeamColor.WHITE;//I didn't want to write out the whole thing every time
+        ChessGame.TeamColor black = ChessGame.TeamColor.BLACK;
+        int column = 1;
+        for (ChessPiece.PieceType pieceType : types) {//set up rooks, knights, and bishops
+            this.spaces[1][column].piece = new ChessPiece(white,pieceType);
+            this.spaces[1][9-column].piece = new ChessPiece(white,pieceType);
+            this.spaces[7][column].piece = new ChessPiece(black,pieceType);
+            this.spaces[7][9-column].piece = new ChessPiece(black,pieceType);
+            column++;
         }
-        this.spaces[1][4].piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN);
-        this.spaces[1][5].piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING);
-        this.spaces[8][4].piece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING);
-        this.spaces[8][5].piece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN);
-        for (int i = 0; i < 8; i++) {
-            this.spaces[2][i].piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
-            this.spaces[7][i].piece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
+        for (int i = 0; i < 8; i++) {//set up pawns
+            this.spaces[2][i].piece = new ChessPiece(white, ChessPiece.PieceType.PAWN);
+            this.spaces[7][i].piece = new ChessPiece(black, ChessPiece.PieceType.PAWN);
         }
+        this.spaces[1][4].piece = new ChessPiece(white, ChessPiece.PieceType.QUEEN);//set up kings and queens
+        this.spaces[1][5].piece = new ChessPiece(white, ChessPiece.PieceType.KING);
+        this.spaces[8][4].piece = new ChessPiece(black, ChessPiece.PieceType.KING);
+        this.spaces[8][5].piece = new ChessPiece(black, ChessPiece.PieceType.QUEEN);
     }
 }
