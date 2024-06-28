@@ -8,8 +8,15 @@ package chess;
  */
 public class ChessBoard {
 
+    ChessPosition[][] spaces;
+
     public ChessBoard() {
-        
+        this.spaces = new ChessPosition[8][8];
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                this.spaces[i][j] = new ChessPosition(i+1, j+1);
+            }
+        }
     }
 
     /**
@@ -19,7 +26,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        throw new RuntimeException("Not implemented");
+        position.piece = piece;
     }
 
     /**
@@ -30,7 +37,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        throw new RuntimeException("Not implemented");
+        return position.piece;//Am I supposed to return like the name or the object reference?
     }
 
     /**
@@ -38,6 +45,28 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        for (int i = 0; i < 2; i++) {
+            int row;
+            if (i==0) {
+                row = 1;
+            }
+            else if (i==1) {
+                row = 8;
+            }
+            this.spaces[row][1].piece = rook;
+            this.spaces[row][2].piece = knight;
+            this.spaces[row][3].piece = bishop;
+            this.spaces[row][6].piece = bishop;
+            this.spaces[row][7].piece = knight;
+            this.spaces[row][8].piece = rook;
+        }
+        this.spaces[1][4].piece = queen;
+        this.spaces[1][5].piece = king;
+        this.spaces[8][4].piece = king;
+        this.spaces[8][5].piece = queen;
+        for (int i = 0; i < 8; i++) {
+            this.spaces[2][i].piece = pawn;
+            this.spaces[7][i].piece = pawn;
+        }
     }
 }
