@@ -53,7 +53,7 @@ public class ChessBoard {
             else if (i==1) {
                 row = 8;
             }
-            this.spaces[row][1].piece = rook;
+            this.spaces[row][1].piece = rook;//these are placeholders
             this.spaces[row][2].piece = knight;
             this.spaces[row][3].piece = bishop;
             this.spaces[row][6].piece = bishop;
