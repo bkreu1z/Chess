@@ -61,4 +61,16 @@ public class ChessPiece {
         if (this.getPieceType().equals(ChessPiece.PieceType.KING)) {}
         return moves;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
+        if (getClass() != o.getClass()) {
+            return false;
+        }
+        ChessPiece other = (ChessPiece) o;
+        return this.getTeamColor().equals(other.getTeamColor()) && this.getPieceType().equals(other.getPieceType());
+    }
 }

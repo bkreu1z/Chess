@@ -46,7 +46,10 @@ public class ChessPosition {
             return false;
         }
         ChessPosition other = (ChessPosition) obj;
-        return this.x == other.x && this.y == other.y && this.piece == other.piece;
+        if (this.piece == null && other.piece == null) {
+            return this.x == other.x && this.y == other.y;
+        }
+        return this.x == other.x && this.y == other.y && this.piece.equals(other.piece);
     }
 
     @Override

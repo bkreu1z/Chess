@@ -17,6 +17,7 @@ public class ChessBoard {
                 this.spaces[i][j] = new ChessPosition(i+1, j+1);
             }
         }
+        this.resetBoard();
     }
 
     /**
@@ -81,7 +82,9 @@ public class ChessBoard {
         }
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (!this.spaces[i][j].equals(((ChessBoard)obj).spaces[i][j])) {
+                ChessPosition current = spaces[i][j];
+                ChessPosition other = ((ChessBoard)obj).spaces[i][j];
+                if (!current.equals(other)) {
                     return false;
                 }
             }
