@@ -17,7 +17,7 @@ public class ChessBoard {
                 this.spaces[i][j] = new ChessPosition(i+1, j+1);
             }
         }
-        this.resetBoard();
+        this.setStartBoard();
     }
 
     /**
@@ -41,16 +41,7 @@ public class ChessBoard {
         return position.piece;//Am I supposed to return like the name or the object reference?
     }
 
-    /**
-     * Sets the board to the default starting board
-     * (How the game of chess normally starts)
-     */
-    public void resetBoard() {
-        for (int i = 0; i < 8; i++) {//clear the board
-            for (int j = 0; j < 8; j++) {
-                this.spaces[i][j].piece = null;
-            }
-        }
+    public void setStartBoard() {
         ChessPiece.PieceType[] types = {ChessPiece.PieceType.ROOK,ChessPiece.PieceType.KNIGHT,ChessPiece.PieceType.BISHOP};
         ChessGame.TeamColor white = ChessGame.TeamColor.WHITE;//I didn't want to write out the whole thing every time
         ChessGame.TeamColor black = ChessGame.TeamColor.BLACK;
@@ -71,6 +62,20 @@ public class ChessBoard {
         this.addPiece(spaces[7][3], new ChessPiece(black, ChessPiece.PieceType.KING));
         this.addPiece(spaces[7][4], new ChessPiece(black, ChessPiece.PieceType.QUEEN));
     }
+
+    /**
+     * Sets the board to the default starting board
+     * (How the game of chess normally starts)
+     */
+    public void resetBoard() {
+        for (int i = 0; i < 8; i++) {//clear the board
+            for (int j = 0; j < 8; j++) {
+                this.spaces[i][j].piece = null;
+            }
+        }
+        setStartBoard();
+    }
+
 
     @Override
     public boolean equals(Object obj) {
