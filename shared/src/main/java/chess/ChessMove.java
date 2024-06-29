@@ -39,6 +39,28 @@ public class ChessMove {
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
-        throw new RuntimeException("Not implemented");
+        return type;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        ChessMove other = (ChessMove) obj;
+        return start.equals(other.start) && end.equals(other.end) && type == other.type;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = this.start.hashCode() * 11 + this.end.hashCode() * 31;
+        if (this.type != null) {
+            this.type.hashCode();
+            hash += this.type.hashCode();
+        }
+        return hash;
     }
 }
