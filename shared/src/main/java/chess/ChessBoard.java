@@ -53,21 +53,39 @@ public class ChessBoard {
         ChessPiece.PieceType[] types = {ChessPiece.PieceType.ROOK,ChessPiece.PieceType.KNIGHT,ChessPiece.PieceType.BISHOP};
         ChessGame.TeamColor white = ChessGame.TeamColor.WHITE;//I didn't want to write out the whole thing every time
         ChessGame.TeamColor black = ChessGame.TeamColor.BLACK;
-        int column = 1;
+        int column = 0;
         for (ChessPiece.PieceType pieceType : types) {//set up rooks, knights, and bishops
-            this.addPiece(spaces[1][column], new ChessPiece(white,pieceType));
-            this.addPiece(spaces[1][9-column], new ChessPiece(white,pieceType));
+            this.addPiece(spaces[0][column], new ChessPiece(white,pieceType));
+            this.addPiece(spaces[0][7-column], new ChessPiece(white,pieceType));
             this.addPiece(spaces[7][column], new ChessPiece(black,pieceType));
-            this.addPiece(spaces[7][9-column], new ChessPiece(black,pieceType));
+            this.addPiece(spaces[7][7-column], new ChessPiece(black,pieceType));
             column++;
         }
         for (int i = 0; i < 8; i++) {//set up pawns
-            this.addPiece(spaces[2][i], new ChessPiece(white, ChessPiece.PieceType.PAWN));
-            this.addPiece(spaces[7][i], new ChessPiece(black, ChessPiece.PieceType.PAWN));
+            this.addPiece(spaces[1][i], new ChessPiece(white, ChessPiece.PieceType.PAWN));
+            this.addPiece(spaces[6][i], new ChessPiece(black, ChessPiece.PieceType.PAWN));
         }
-        this.addPiece(spaces[1][4], new ChessPiece(white, ChessPiece.PieceType.QUEEN));//set up kings and queens
-        this.addPiece(spaces[1][5], new ChessPiece(white, ChessPiece.PieceType.KING));
-        this.addPiece(spaces[8][4], new ChessPiece(black, ChessPiece.PieceType.KING));
-        this.addPiece(spaces[8][5], new ChessPiece(black, ChessPiece.PieceType.QUEEN));
+        this.addPiece(spaces[0][3], new ChessPiece(white, ChessPiece.PieceType.QUEEN));//set up kings and queens
+        this.addPiece(spaces[0][4], new ChessPiece(white, ChessPiece.PieceType.KING));
+        this.addPiece(spaces[7][3], new ChessPiece(black, ChessPiece.PieceType.KING));
+        this.addPiece(spaces[7][4], new ChessPiece(black, ChessPiece.PieceType.QUEEN));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (!this.spaces[i][j].equals(((ChessBoard)obj).spaces[i][j])) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

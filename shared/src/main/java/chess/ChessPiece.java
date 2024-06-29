@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -33,14 +34,14 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        throw new RuntimeException("Not implemented");
+        return this.color;
     }
 
     /**
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        throw new RuntimeException("Not implemented");
+        return this.type;
     }
 
     /**
@@ -51,6 +52,13 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> moves = new ArrayList<>();
+        if (this.getPieceType().equals(ChessPiece.PieceType.PAWN)) {}
+        if (this.getPieceType().equals(ChessPiece.PieceType.ROOK)) {}
+        if (this.getPieceType().equals(ChessPiece.PieceType.KNIGHT)) {}
+        if (this.getPieceType().equals(ChessPiece.PieceType.BISHOP)) {}
+        if (this.getPieceType().equals(ChessPiece.PieceType.QUEEN)) {}
+        if (this.getPieceType().equals(ChessPiece.PieceType.KING)) {}
+        return moves;
     }
 }
