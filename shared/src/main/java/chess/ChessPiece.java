@@ -1,7 +1,8 @@
 package chess;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Represents a single chess piece
@@ -12,6 +13,7 @@ import java.util.Collection;
 public class ChessPiece {
     ChessGame.TeamColor color;
     ChessPiece.PieceType type;
+    boolean hasMoved = false;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.color = pieceColor;
@@ -52,13 +54,20 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        Collection<ChessMove> moves = new ArrayList<>();
-        if (this.getPieceType().equals(ChessPiece.PieceType.PAWN)) {}
-        if (this.getPieceType().equals(ChessPiece.PieceType.ROOK)) {}
-        if (this.getPieceType().equals(ChessPiece.PieceType.KNIGHT)) {}
-        if (this.getPieceType().equals(ChessPiece.PieceType.BISHOP)) {}
-        if (this.getPieceType().equals(ChessPiece.PieceType.QUEEN)) {}
-        if (this.getPieceType().equals(ChessPiece.PieceType.KING)) {}
+        Set<ChessMove> moves = new HashSet<>();
+        MoveCalculator calculator = null;//it was complaining about it not being initialized, so I just set it to null
+        switch (myPosition.piece.type) {
+            case ChessPiece.PieceType.PAWN -> calculator = new PawnMoveCalculator();
+            case ChessPiece.PieceType.ROOK -> calculator = new RookMoveCalculator();
+            case ChessPiece.PieceType.KNIGHT -> calculator = new KnightMoveCalculator();
+            case ChessPiece.PieceType.BISHOP -> calculator = new BishopMoveCalculator();
+            case ChessPiece.PieceType.KING -> calculator = new KingMoveCalculator();
+            case ChessPiece.PieceType.QUEEN -> calculator = new QueenMoveCalculator();
+        }
+        Set<ChessPosition> positions = calculator.findMoves(board,myPosition);
+        for (ChessPosition position : positions) {
+            moves.add(new ChessMove(myPosition, position,null));
+        }
         return moves;
     }
 
