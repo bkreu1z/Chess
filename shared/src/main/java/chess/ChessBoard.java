@@ -17,7 +17,7 @@ public class ChessBoard {
                 this.spaces[i][j] = new ChessPosition(i+1, j+1);
             }
         }
-        this.setStartBoard();
+        //this.setStartBoard();
     }
 
     /**
@@ -27,6 +27,9 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
+        int row = position.getRow();
+        int column = position.getColumn();
+        spaces[row-1][column-1].piece = piece;
         position.piece = piece;
     }
 
@@ -38,7 +41,9 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return position.piece;//Am I supposed to return like the name or the object reference?
+        int row = position.getRow();
+        int column = position.getColumn();
+        return spaces[row-1][column-1].piece;
     }
 
     public void setStartBoard() {

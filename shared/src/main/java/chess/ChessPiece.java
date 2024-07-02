@@ -56,7 +56,7 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         Set<ChessMove> moves = new HashSet<>();
         MoveCalculator calculator = null;//it was complaining about it not being initialized, so I just set it to null
-        switch (myPosition.piece.type) {
+        switch (board.spaces[myPosition.getRow()-1][myPosition.getColumn()-1].piece.type) {
             case ChessPiece.PieceType.PAWN -> calculator = new PawnMoveCalculator();
             case ChessPiece.PieceType.ROOK -> calculator = new RookMoveCalculator();
             case ChessPiece.PieceType.KNIGHT -> calculator = new KnightMoveCalculator();
