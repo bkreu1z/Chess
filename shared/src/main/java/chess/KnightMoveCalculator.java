@@ -18,8 +18,7 @@ public class KnightMoveCalculator implements MoveCalculator {
             } else {
                 moves.add(new ChessPosition(y + 2, x + 1));
             }
-        } catch (ArrayIndexOutOfBoundsException e) {
-        }
+        } catch (ArrayIndexOutOfBoundsException e) {}
         try {
             if (board.getPiece(new ChessPosition(y + 1, x + 2)) != null) {
                 if (color != board.getPiece(new ChessPosition(y + 1, x + 2)).getTeamColor()) {
