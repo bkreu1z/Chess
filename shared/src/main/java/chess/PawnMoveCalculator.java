@@ -10,9 +10,9 @@ public class PawnMoveCalculator implements MoveCalculator {
         int x = myPosition.getColumn();
         int y = myPosition.getRow();
             if (myPosition.piece.color == ChessGame.TeamColor.BLACK) {
-                //if (!ChessPiece.hasMoved && board.spaces[x-1][y-3].isEmpty()) {
-                //    moves.add(new ChessPosition(x,y-2));//check indexes on this
-                //}
+                if (myPosition.getRow() == 7 && board.spaces[x-1][y-3].isEmpty()) {//if it hasn't moved yet
+                    moves.add(new ChessPosition(x,y-2));
+                }
                 if (board.spaces[x-1][y-2].isEmpty()){
                     moves.add(new ChessPosition(x,y-1));
                 }
@@ -24,9 +24,9 @@ public class PawnMoveCalculator implements MoveCalculator {
                 }
             }
             else {//if the pawn is white
-                //if (!hasMoved && board.spaces[x-1][y+1].isEmpty()) {//pawns can move two spaces on the first time, but I'm not sure how to check if it's the first turn
-                //    moves.add(new ChessPosition(x,y+2));//check indexes on this
-                //}
+                if (myPosition.getRow() == 2 && board.spaces[x-1][y+1].isEmpty()) {//if it hasn't moved yet
+                    moves.add(new ChessPosition(x,y+2));//check indexes on this
+                }
                 if (board.spaces[x-1][y].isEmpty()){
                     moves.add(new ChessPosition(x,y+1));
                 }

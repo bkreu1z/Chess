@@ -66,7 +66,15 @@ public class ChessPiece {
         }
         Set<ChessPosition> positions = calculator.findMoves(board,myPosition);
         for (ChessPosition position : positions) {
-            moves.add(new ChessMove(myPosition, position,null));
+            //if (position.getRow() == 1 && position.piece.type == ChessPiece.PieceType.PAWN && position.piece.color == ChessGame.TeamColor.BLACK) {
+            //    moves.add(new ChessMove(myPosition, position, PieceType.QUEEN));//this should account for pawns that make it to the other side
+            //}
+            //if (position.getRow() == 8 && position.piece.type == ChessPiece.PieceType.PAWN && position.piece.color == ChessGame.TeamColor.WHITE) {
+            //    moves.add(new ChessMove(myPosition, position, PieceType.QUEEN));
+            //}
+            //else {
+                moves.add(new ChessMove(myPosition, position, null));
+            //}
         }
         return moves;
     }
