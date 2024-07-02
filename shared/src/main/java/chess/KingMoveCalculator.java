@@ -45,36 +45,36 @@ public class KingMoveCalculator implements MoveCalculator {
                 moves.add(new ChessPosition(x + 1, y));
             }
             if (y + 1 <= 8) {
-                if (!board.spaces[x][y].isEmpty()) {//check top right
+                if (!board.spaces[x][y].isEmpty()) {
                     if (board.spaces[x][y].piece.getTeamColor() != myPosition.piece.getTeamColor()) {
-                        moves.add(new ChessPosition(x + 1, y + 1));
+                        moves.add(new ChessPosition(x + 1, y + 1));//check top right
                     }
                 } else {
                     moves.add(new ChessPosition(x + 1, y + 1));
                 }
             }
             if (y - 1 > 0) {
-                if (!board.spaces[x][y-2].isEmpty()) {//check bottom right
+                if (!board.spaces[x][y-2].isEmpty()) {
                     if (board.spaces[x][y-2].piece.getTeamColor() != myPosition.piece.getTeamColor()) {
-                        moves.add(new ChessPosition(x + 1, y - 1));
+                        moves.add(new ChessPosition(x + 1, y - 1));//bottom right
                     }
                 } else {
                     moves.add(new ChessPosition(x + 1, y - 1));
                 }
             }
             if (y + 1 <= 8) {
-                if (!board.spaces[x - 1][y].isEmpty()) {//top
+                if (!board.spaces[x - 1][y].isEmpty()) {
                     if (board.spaces[x - 1][y].piece.getTeamColor() != myPosition.piece.getTeamColor()) {
-                        moves.add(new ChessPosition(x, y + 1));
+                        moves.add(new ChessPosition(x, y + 1));//top
                     }
                 } else {
                     moves.add(new ChessPosition(x, y + 1));
                 }
             }
             if (y - 1 > 0) {
-                if (!board.spaces[x - 1][y-2].isEmpty()) {//bottom
-                    if (board.spaces[x - 1][y-2].piece.getTeamColor() != myPosition.piece.getTeamColor()) {
-                        moves.add(new ChessPosition(x, y - 1));
+                if (!board.spaces[x - 1][y - 2].isEmpty()) {
+                    if (board.spaces[x - 1][y - 2].piece.getTeamColor() != myPosition.piece.getTeamColor()) {
+                        moves.add(new ChessPosition(x, y - 1));//bottom
                     }
                 } else {
                     moves.add(new ChessPosition(x, y - 1));
