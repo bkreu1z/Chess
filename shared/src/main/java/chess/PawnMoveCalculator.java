@@ -9,35 +9,47 @@ public class PawnMoveCalculator implements MoveCalculator {
         Set<ChessPosition> moves = new HashSet<>();
         int x = myPosition.getColumn();
         int y = myPosition.getRow();
-        try {
-            if (myPosition.piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
-                if (board.spaces[x - 1][y - 2].isEmpty()) {
-                    moves.add(new ChessPosition(x, y - 1));
-                    if (myPosition.getRow() == 7 && board.spaces[x - 1][y - 3].isEmpty()) {//if it hasn't moved yet
-                        moves.add(new ChessPosition(x, y - 2));
-                    };
-                }
-                if (!board.spaces[x - 2][y - 2].isEmpty() && board.spaces[x - 2][y - 2].piece.getTeamColor() == ChessGame.TeamColor.WHITE) {//check left diagonal
-                    moves.add(new ChessPosition(x - 1, y - 1));
-                }
-                if (!board.spaces[x][y - 2].isEmpty() && board.spaces[x - 2][y].piece.getTeamColor() == ChessGame.TeamColor.WHITE) {//check right diagonal
-                    moves.add(new ChessPosition(x + 1, y - 1));
-                }
-            } else {//if the pawn is white
-                if (board.spaces[x - 1][y].isEmpty()) {
-                    moves.add(new ChessPosition(x, y + 1));
-                    if (myPosition.getRow() == 2 && board.spaces[x - 1][y + 1].isEmpty()) {//if it hasn't moved yet
-                        moves.add(new ChessPosition(x, y + 2));
+        ChessGame.TeamColor color = board.getPiece(myPosition).getTeamColor();
+        if (color == ChessGame.TeamColor.BLACK) {
+            try {
+                if (board.getPiece(new ChessPosition(y - 1, x)) == null) {
+                    moves.add(new ChessPosition(y - 1, x));
+                    if (y == 7 && board.getPiece(new ChessPosition(y - 2, x)) == null) {
+                        moves.add(new ChessPosition(y - 2, x));
                     }
                 }
-                if (!board.spaces[x - 2][y].isEmpty() && board.spaces[x - 2][y].piece.getTeamColor() == ChessGame.TeamColor.WHITE) {//check left diagonal
-                    moves.add(new ChessPosition(x - 1, y + 1));
+            } catch (ArrayIndexOutOfBoundsException e) {}
+            try {
+                if (board.getPiece(new ChessPosition(y - 1, x - 1)) != null && board.getPiece(new ChessPosition(y - 1, x - 1)).getTeamColor() != color) {
+                    moves.add(new ChessPosition(y - 1, x - 1));
                 }
-                if (!board.spaces[x][y].isEmpty() && board.spaces[x][y].piece.getTeamColor() == ChessGame.TeamColor.WHITE) {//check right diagonal
-                    moves.add(new ChessPosition(x + 1, y + 1));
+            } catch (ArrayIndexOutOfBoundsException e) {}
+            try {
+                if (board.getPiece(new ChessPosition(y - 1, x + 1)) != null && board.getPiece(new ChessPosition(y - 1, x + 1)).getTeamColor() != color) {
+                    moves.add(new ChessPosition(y - 1, x + 1));
                 }
-            }
-        } catch (ArrayIndexOutOfBoundsException e) {}
+            } catch (ArrayIndexOutOfBoundsException e) {}
+        }
+        if (color == ChessGame.TeamColor.WHITE) {
+            try {
+                if (board.getPiece(new ChessPosition(y + 1, x)) == null) {
+                    moves.add(new ChessPosition(y + 1, x));
+                    if (y == 2 && board.getPiece(new ChessPosition(y + 2, x)) == null) {
+                        moves.add(new ChessPosition(y + 2, x));
+                    }
+                }
+            } catch (ArrayIndexOutOfBoundsException e) {}
+            try {
+                if (board.getPiece(new ChessPosition(y + 1, x - 1)) != null && board.getPiece(new ChessPosition(y + 1, x - 1)).getTeamColor() != color) {
+                    moves.add(new ChessPosition(y + 1, x - 1));
+                }
+            } catch (ArrayIndexOutOfBoundsException e) {}
+            try {
+                if (board.getPiece(new ChessPosition(y + 1, x + 1)) != null && board.getPiece(new ChessPosition(y + 1, x + 1)).getTeamColor() != color) {
+                    moves.add(new ChessPosition(y + 1, x + 1));
+                }
+            } catch (ArrayIndexOutOfBoundsException e) {}
+        }
         return moves;
     }
 }

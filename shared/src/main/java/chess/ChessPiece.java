@@ -66,15 +66,21 @@ public class ChessPiece {
         }
         Set<ChessPosition> positions = calculator.findMoves(board,myPosition);
         for (ChessPosition position : positions) {
-            //if (position.getRow() == 1 && position.piece.type == ChessPiece.PieceType.PAWN && position.piece.color == ChessGame.TeamColor.BLACK) {
-            //    moves.add(new ChessMove(myPosition, position, PieceType.QUEEN));//this should account for pawns that make it to the other side
-            //}
-            //if (position.getRow() == 8 && position.piece.type == ChessPiece.PieceType.PAWN && position.piece.color == ChessGame.TeamColor.WHITE) {
-            //    moves.add(new ChessMove(myPosition, position, PieceType.QUEEN));
-            //}
-            //else {
+            if (position.getRow() == 1 && board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.PAWN && board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.BLACK) {
+                moves.add(new ChessMove(myPosition, position, PieceType.QUEEN));
+                moves.add(new ChessMove(myPosition, position, PieceType.BISHOP));//this should account for pawns that make it to the other side
+                moves.add(new ChessMove(myPosition, position, PieceType.KNIGHT));
+                moves.add(new ChessMove(myPosition, position, PieceType.ROOK));
+            }
+            else if (position.getRow() == 8 && board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.PAWN && board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.WHITE) {
+                moves.add(new ChessMove(myPosition, position, PieceType.QUEEN));
+                moves.add(new ChessMove(myPosition, position, PieceType.BISHOP));
+                moves.add(new ChessMove(myPosition, position, PieceType.KNIGHT));
+                moves.add(new ChessMove(myPosition, position, PieceType.ROOK));
+            }
+            else {
                 moves.add(new ChessMove(myPosition, position, null));
-            //}
+            }
         }
         return moves;
     }
