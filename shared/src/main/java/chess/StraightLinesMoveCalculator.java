@@ -51,5 +51,54 @@ public abstract class StraightLinesMoveCalculator {
         return octMoves;
     }
 
-    public Set<ChessPosition> findDiagonalMoves(ChessBoard board, ChessPosition myPosition) {}
+    public Set<ChessPosition> findDiagonalMoves(ChessBoard board, ChessPosition myPosition) {
+        Set<ChessPosition> diagonalMoves = new HashSet<>();
+        int currentx = myPosition.getColumn();
+        int currenty = myPosition.getRow();
+        while (currentx <= 8 && currenty <= 8) {
+            if (board.spaces[currentx][currenty].isEmpty()) {
+                diagonalMoves.add(new ChessPosition(currentx + 1, currenty + 1));
+            } else if (myPosition.piece.getTeamColor() != board.spaces[currentx][currenty].piece.getTeamColor()) {
+                diagonalMoves.add(new ChessPosition(currentx + 1, currenty + 1));
+                break;
+            }
+            currentx++;
+            currenty++;
+        }
+        currentx = myPosition.getColumn();
+        currenty = myPosition.getRow();
+        while (currentx <= 8 && currenty > 0) {
+            if (board.spaces[currentx][currenty - 2].isEmpty()) {
+                diagonalMoves.add(new ChessPosition(currentx + 1, currenty - 1));
+            } else if (myPosition.piece.getTeamColor() != board.spaces[currentx][currenty - 2].piece.getTeamColor()) {
+                diagonalMoves.add(new ChessPosition(currentx + 1, currenty - 1));
+                break;
+            }
+            currentx++;
+            currenty--;
+        }
+        currentx = myPosition.getColumn();
+        currenty = myPosition.getRow();
+        while (currentx > 0 && currenty > 0) {
+            if (board.spaces[currentx - 2][currenty - 2].isEmpty()) {
+                diagonalMoves.add(new ChessPosition(currentx - 1, currenty - 1));
+            } else if (myPosition.piece.getTeamColor() != board.spaces[currentx - 2][currenty - 2].piece.getTeamColor()) {
+                diagonalMoves.add(new ChessPosition(currentx - 1, currenty - 1));
+                break;
+            }
+            currentx--;
+            currenty--;
+        }
+        while (currentx > 0 && currenty <= 8) {
+            if (board.spaces[currentx - 2][currenty].isEmpty()) {
+                diagonalMoves.add(new ChessPosition(currentx - 1, currenty + 1));
+            } else if (myPosition.piece.getTeamColor() != board.spaces[currentx - 2][currenty].piece.getTeamColor()) {
+                diagonalMoves.add(new ChessPosition(currentx - 1, currenty + 1));
+                break;
+            }
+            currentx--;
+            currenty++;
+        }
+        return diagonalMoves;
+    }
 }
