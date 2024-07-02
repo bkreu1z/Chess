@@ -17,7 +17,6 @@ public class ChessBoard {
                 this.spaces[i][j] = new ChessPosition(i+1, j+1);
             }
         }
-        //this.setStartBoard();
     }
 
     /**
@@ -64,8 +63,8 @@ public class ChessBoard {
         }
         this.addPiece(spaces[0][3], new ChessPiece(white, ChessPiece.PieceType.QUEEN));//set up kings and queens
         this.addPiece(spaces[0][4], new ChessPiece(white, ChessPiece.PieceType.KING));
-        this.addPiece(spaces[7][3], new ChessPiece(black, ChessPiece.PieceType.KING));
-        this.addPiece(spaces[7][4], new ChessPiece(black, ChessPiece.PieceType.QUEEN));
+        this.addPiece(spaces[7][3], new ChessPiece(black, ChessPiece.PieceType.QUEEN));
+        this.addPiece(spaces[7][4], new ChessPiece(black, ChessPiece.PieceType.KING));
     }
 
     /**
