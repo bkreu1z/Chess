@@ -9,13 +9,13 @@ package chess;
 public class ChessMove {
     public ChessPosition start;
     public ChessPosition end;
-    public ChessPiece.PieceType type;
+    public ChessPiece.PieceType promotionType;
 
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
         start = startPosition;
         end = endPosition;
-        type = promotionPiece;
+        promotionType = promotionPiece;
     }
 
     /**
@@ -39,7 +39,7 @@ public class ChessMove {
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
-        return type;
+        return promotionType;
     }
 
     @Override
@@ -51,15 +51,15 @@ public class ChessMove {
             return false;
         }
         ChessMove other = (ChessMove) obj;
-        return start.equals(other.start) && end.equals(other.end) && type == other.type;
+        return start.equals(other.start) && end.equals(other.end) && promotionType == other.promotionType;
     }
 
     @Override
     public int hashCode() {
         int hash = this.start.hashCode() * 11 + this.end.hashCode() * 31;
-        if (this.type != null) {
-            this.type.hashCode();
-            hash += this.type.hashCode();
+        if (this.promotionType != null) {
+            this.promotionType.hashCode();
+            hash += this.promotionType.hashCode();
         }
         return hash;
     }

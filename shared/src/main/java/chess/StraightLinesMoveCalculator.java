@@ -7,51 +7,51 @@ public abstract class StraightLinesMoveCalculator {
     public Set<ChessPosition> findOctMoves(ChessBoard board, ChessPosition myPosition) {
         Set<ChessPosition> octMoves = new HashSet<>();
         ChessGame.TeamColor color = board.getPiece(myPosition).getTeamColor();
-        int currentx = myPosition.getColumn();
-        int currenty = myPosition.getRow();
+        int currentX = myPosition.getColumn();
+        int currentY = myPosition.getRow();
         int left = myPosition.getColumn() - 1;
         int right = myPosition.getColumn() + 1;
         int up = myPosition.getRow() + 1;
         int down = myPosition.getRow() - 1;
         while (up <= 8) {
-            if (board.getPiece(new ChessPosition(up, currentx)) == null){
-                octMoves.add(new ChessPosition(up, currentx));
+            if (board.getPiece(new ChessPosition(up, currentX)) == null){
+                octMoves.add(new ChessPosition(up, currentX));
             } else {
-                if (color != board.getPiece(new ChessPosition(up, currentx)).getTeamColor()) {
-                    octMoves.add(new ChessPosition(up, currentx));
+                if (color != board.getPiece(new ChessPosition(up, currentX)).getTeamColor()) {
+                    octMoves.add(new ChessPosition(up, currentX));
                 }
                 break;
             }
             up++;
         }
         while (down > 0) {
-            if (board.getPiece(new ChessPosition(down, currentx)) == null){
-                octMoves.add(new ChessPosition(down, currentx));
+            if (board.getPiece(new ChessPosition(down, currentX)) == null){
+                octMoves.add(new ChessPosition(down, currentX));
             } else {
-                if (color != board.getPiece(new ChessPosition(down, currentx)).getTeamColor()) {
-                    octMoves.add(new ChessPosition(down, currentx));
+                if (color != board.getPiece(new ChessPosition(down, currentX)).getTeamColor()) {
+                    octMoves.add(new ChessPosition(down, currentX));
                 }
                 break;
             }
             down--;
         }
         while (left > 0) {
-            if (board.getPiece(new ChessPosition(currenty, left)) == null){
-                octMoves.add(new ChessPosition(currenty, left));
+            if (board.getPiece(new ChessPosition(currentY, left)) == null){
+                octMoves.add(new ChessPosition(currentY, left));
             } else {
-                if (color != board.getPiece(new ChessPosition(currenty, left)).getTeamColor()) {
-                    octMoves.add(new ChessPosition(currenty, left));
+                if (color != board.getPiece(new ChessPosition(currentY, left)).getTeamColor()) {
+                    octMoves.add(new ChessPosition(currentY, left));
                 }
                 break;
             }
             left--;
         }
         while (right <= 8) {
-            if (board.getPiece(new ChessPosition(currenty, right)) == null){
-                octMoves.add(new ChessPosition(currenty, right));
+            if (board.getPiece(new ChessPosition(currentY, right)) == null){
+                octMoves.add(new ChessPosition(currentY, right));
             } else {
-                if (color != board.getPiece(new ChessPosition(currenty, right)).getTeamColor()) {
-                    octMoves.add(new ChessPosition(currenty, right));
+                if (color != board.getPiece(new ChessPosition(currentY, right)).getTeamColor()) {
+                    octMoves.add(new ChessPosition(currentY, right));
                 }
                 break;
             }
@@ -62,62 +62,62 @@ public abstract class StraightLinesMoveCalculator {
 
     public Set<ChessPosition> findDiagonalMoves(ChessBoard board, ChessPosition myPosition) {
         Set<ChessPosition> diagonalMoves = new HashSet<>();
-        int currentx = myPosition.getColumn();
-        int currenty = myPosition.getRow();
+        int currentX = myPosition.getColumn();
+        int currentY = myPosition.getRow();
         ChessGame.TeamColor color = board.getPiece(myPosition).getTeamColor();
-        while (currentx < 8 && currenty < 8) {
-            if (board.getPiece(new ChessPosition(currenty + 1, currentx + 1)) == null) {
-                diagonalMoves.add(new ChessPosition(currenty + 1, currentx + 1));
+        while (currentX < 8 && currentY < 8) {
+            if (board.getPiece(new ChessPosition(currentY + 1, currentX + 1)) == null) {
+                diagonalMoves.add(new ChessPosition(currentY + 1, currentX + 1));
             } else {
-                if (color != board.getPiece(new ChessPosition(currenty + 1, currentx + 1)).getTeamColor()) {
-                diagonalMoves.add(new ChessPosition(currenty + 1, currentx + 1));
+                if (color != board.getPiece(new ChessPosition(currentY + 1, currentX + 1)).getTeamColor()) {
+                diagonalMoves.add(new ChessPosition(currentY + 1, currentX + 1));
                 }
                 break;
             }
-            currentx++;
-            currenty++;
+            currentX++;
+            currentY++;
         }
-        currentx = myPosition.getColumn();
-        currenty = myPosition.getRow();
-        while (currentx < 8 && currenty > 1) {
-            if (board.getPiece(new ChessPosition(currenty - 1,currentx + 1)) == null) {
-                diagonalMoves.add(new ChessPosition(currenty - 1,currentx + 1));
+        currentX = myPosition.getColumn();
+        currentY = myPosition.getRow();
+        while (currentX < 8 && currentY > 1) {
+            if (board.getPiece(new ChessPosition(currentY - 1,currentX + 1)) == null) {
+                diagonalMoves.add(new ChessPosition(currentY - 1,currentX + 1));
             } else {
-                if (color != board.getPiece(new ChessPosition(currenty - 1,currentx + 1)).getTeamColor()) {
-                    diagonalMoves.add(new ChessPosition(currenty - 1, currentx + 1));
+                if (color != board.getPiece(new ChessPosition(currentY - 1,currentX + 1)).getTeamColor()) {
+                    diagonalMoves.add(new ChessPosition(currentY - 1, currentX + 1));
                 }
                 break;
             }
-            currentx++;
-            currenty--;
+            currentX++;
+            currentY--;
         }
-        currentx = myPosition.getColumn();
-        currenty = myPosition.getRow();
-        while (currentx > 1 && currenty > 1) {
-            if (board.getPiece(new ChessPosition(currenty - 1, currentx - 1)) == null) {
-                diagonalMoves.add(new ChessPosition(currenty - 1, currentx - 1));
+        currentX = myPosition.getColumn();
+        currentY = myPosition.getRow();
+        while (currentX > 1 && currentY > 1) {
+            if (board.getPiece(new ChessPosition(currentY - 1, currentX - 1)) == null) {
+                diagonalMoves.add(new ChessPosition(currentY - 1, currentX - 1));
             } else {
-                if (color != board.getPiece(new ChessPosition(currenty - 1, currentx - 1)).getTeamColor()) {
-                    diagonalMoves.add(new ChessPosition(currenty - 1, currentx - 1));
+                if (color != board.getPiece(new ChessPosition(currentY - 1, currentX - 1)).getTeamColor()) {
+                    diagonalMoves.add(new ChessPosition(currentY - 1, currentX - 1));
                 }
                 break;
             }
-            currentx--;
-            currenty--;
+            currentX--;
+            currentY--;
         }
-        currentx = myPosition.getColumn();
-        currenty = myPosition.getRow();
-        while (currentx > 1 && currenty < 8) {
-            if (board.getPiece(new ChessPosition(currenty + 1,currentx - 1)) == null) {
-                diagonalMoves.add(new ChessPosition(currenty + 1,currentx - 1));
+        currentX = myPosition.getColumn();
+        currentY = myPosition.getRow();
+        while (currentX > 1 && currentY < 8) {
+            if (board.getPiece(new ChessPosition(currentY + 1,currentX - 1)) == null) {
+                diagonalMoves.add(new ChessPosition(currentY + 1,currentX - 1));
             } else {
-                if (color != board.getPiece(new ChessPosition(currenty + 1,currentx - 1)).getTeamColor()) {
-                    diagonalMoves.add(new ChessPosition(currenty + 1,currentx - 1));
+                if (color != board.getPiece(new ChessPosition(currentY + 1,currentX - 1)).getTeamColor()) {
+                    diagonalMoves.add(new ChessPosition(currentY + 1,currentX - 1));
                 }
                 break;
             }
-            currentx--;
-            currenty++;
+            currentX--;
+            currentY++;
         }
         return diagonalMoves;
     }

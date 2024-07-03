@@ -13,7 +13,6 @@ import java.util.Set;
 public class ChessPiece {
     ChessGame.TeamColor color;
     ChessPiece.PieceType type;
-    boolean hasMoved = false;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.color = pieceColor;
@@ -56,7 +55,7 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         Set<ChessMove> moves = new HashSet<>();
         MoveCalculator calculator = null;//it was complaining about it not being initialized, so I just set it to null
-        switch (board.spaces[myPosition.getRow()-1][myPosition.getColumn()-1].piece.type) {
+        switch (board.getPiece(myPosition).getPieceType()) {
             case ChessPiece.PieceType.PAWN -> calculator = new PawnMoveCalculator();
             case ChessPiece.PieceType.ROOK -> calculator = new RookMoveCalculator();
             case ChessPiece.PieceType.KNIGHT -> calculator = new KnightMoveCalculator();

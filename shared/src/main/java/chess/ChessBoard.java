@@ -14,7 +14,7 @@ public class ChessBoard {
         this.spaces = new ChessPosition[8][8];
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                this.spaces[i][j] = new ChessPosition(i+1, j+1);
+                this.spaces[i][j] = new ChessPosition(i + 1, j + 1);
             }
         }
     }
@@ -28,7 +28,7 @@ public class ChessBoard {
     public void addPiece(ChessPosition position, ChessPiece piece) {
         int row = position.getRow();
         int column = position.getColumn();
-        spaces[row-1][column-1].piece = piece;
+        spaces[row - 1][column - 1].piece = piece;
         position.piece = piece;
     }
 
@@ -42,19 +42,19 @@ public class ChessBoard {
     public ChessPiece getPiece(ChessPosition position) {
         int row = position.getRow();
         int column = position.getColumn();
-        return spaces[row-1][column-1].piece;
+        return spaces[row - 1][column - 1].piece;
     }
 
     public void setStartBoard() {
-        ChessPiece.PieceType[] types = {ChessPiece.PieceType.ROOK,ChessPiece.PieceType.KNIGHT,ChessPiece.PieceType.BISHOP};
+        ChessPiece.PieceType[] types = {ChessPiece.PieceType.ROOK, ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.BISHOP};
         ChessGame.TeamColor white = ChessGame.TeamColor.WHITE;//I didn't want to write out the whole thing every time
         ChessGame.TeamColor black = ChessGame.TeamColor.BLACK;
         int column = 0;
         for (ChessPiece.PieceType pieceType : types) {//set up rooks, knights, and bishops
             this.addPiece(spaces[0][column], new ChessPiece(white,pieceType));
-            this.addPiece(spaces[0][7-column], new ChessPiece(white,pieceType));
+            this.addPiece(spaces[0][7 - column], new ChessPiece(white,pieceType));
             this.addPiece(spaces[7][column], new ChessPiece(black,pieceType));
-            this.addPiece(spaces[7][7-column], new ChessPiece(black,pieceType));
+            this.addPiece(spaces[7][7 - column], new ChessPiece(black,pieceType));
             column++;
         }
         for (int i = 0; i < 8; i++) {//set up pawns

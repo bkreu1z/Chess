@@ -32,10 +32,6 @@ public class ChessPosition {
         return this.x;
     }
 
-    public boolean isEmpty() {
-        return piece == null;
-    }
-
     @Override
     public String toString() {
         return String.format("(%d, %d)", x, y);//may want to add functionality to check if the piece is the same
