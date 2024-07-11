@@ -32,6 +32,13 @@ public class ChessBoard {
         position.piece = piece;
     }
 
+    public void removePiece(ChessPosition position) {
+        int row = position.getRow();
+        int column = position.getColumn();
+        spaces[row - 1][column - 1].piece = null;
+        position.piece = null;
+    }
+
     /**
      * Gets a chess piece on the chessboard
      *
