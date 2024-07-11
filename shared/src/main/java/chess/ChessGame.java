@@ -59,9 +59,17 @@ public class ChessGame {
         Set<ChessMove> validMoves = new HashSet<>();
         for (ChessMove move : moves) {
             try {
+                ChessGame.TeamColor ogColor = getTeamTurn();
+                ChessPiece capturedPiece = null;
+                if (board.getPiece(move.getEndPosition()) != null) {
+                    capturedPiece = board.getPiece(move.getEndPosition());
+                }
+                setTeamTurn(board.getPiece(move.getStartPosition()).getTeamColor());
                 makeMove(move);
                 validMoves.add(move);
                 unmakeMove(move);
+                board.addPiece(move.getEndPosition(), capturedPiece);
+                setTeamTurn(ogColor);
             } catch (InvalidMoveException e) {}//I don't know what to put in the catch block, so I'll just make sure it works and figure it out later
         }
         return validMoves;
@@ -78,7 +86,7 @@ public class ChessGame {
             throw new InvalidMoveException();
         }
         if (board.getPiece(move.getStartPosition()).getTeamColor() != teamTurn) {
-            throw new InvalidMoveException();
+            throw new InvalidMoveException("not your turn");
         }
         boolean moveChecked = false;
         for (ChessMove validMove : board.getPiece(move.getStartPosition()).pieceMoves(board, move.getStartPosition())) {
@@ -94,6 +102,7 @@ public class ChessGame {
         if (move.getPromotionPiece() != null) {
             piece = new ChessPiece(piece.getTeamColor(), move.getPromotionPiece());
         }
+        ChessPiece capturedPiece = board.getPiece(move.getEndPosition());
         board.addPiece(move.getEndPosition(), piece);
         board.removePiece(move.getStartPosition());
         if (teamTurn == TeamColor.BLACK) {
@@ -104,6 +113,7 @@ public class ChessGame {
         if (isInCheck(board.getPiece(move.getEndPosition()).getTeamColor())) {
             board.addPiece(move.getStartPosition(), board.getPiece(move.getEndPosition()));
             board.removePiece(move.getEndPosition());
+            board.addPiece(move.getEndPosition(), capturedPiece);
             if (teamTurn == TeamColor.BLACK) {
                 setTeamTurn(TeamColor.WHITE);
             } else {
