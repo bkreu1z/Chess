@@ -175,8 +175,16 @@ public class ChessGame {
                 if (board.getPiece(square) != null && board.getPiece(square).getTeamColor() == teamColor) {
                     for (ChessMove move : board.getPiece(square).pieceMoves(board, square)) {
                         try {
+                            ChessGame.TeamColor ogColor = getTeamTurn();
+                            ChessPiece capturedPiece = null;
+                            if (board.getPiece(move.getEndPosition()) != null) {
+                                capturedPiece = board.getPiece(move.getEndPosition());
+                            }
+                            setTeamTurn(board.getPiece(move.getStartPosition()).getTeamColor());
                             makeMove(move);
                             unmakeMove(move);
+                            board.addPiece(move.getEndPosition(), capturedPiece);
+                            setTeamTurn(ogColor);
                             return false;
                         } catch (InvalidMoveException e) {}//I also don't know what to put in this one
                     }
@@ -197,7 +205,7 @@ public class ChessGame {
         for (ChessPosition[] row : board.spaces) {
             for (ChessPosition square : row) {
                 if (board.getPiece(square) != null && board.getPiece(square).getTeamColor() == teamColor) {
-                    if (board.getPiece(square).pieceMoves(board, square) != null) {
+                    if (!validMoves(square).isEmpty()) {
                         return false;
                     }
                 }
