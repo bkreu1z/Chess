@@ -34,7 +34,10 @@ public class ChessPosition {
 
     @Override
     public String toString() {
-        return String.format("(%d, %d)", x, y);//may want to add functionality to check if the piece is the same
+        if (this.piece == null) {
+            return String.format("(%d, %d)", x, y);
+        }
+        return String.format("(%d, %d) %s", x, y, this.piece.toString());
     }
 
     @Override
@@ -46,10 +49,7 @@ public class ChessPosition {
             return false;
         }
         ChessPosition other = (ChessPosition) obj;
-        if (this.piece == null && other.piece == null) {
-            return this.x == other.x && this.y == other.y;
-        }
-        return this.x == other.x && this.y == other.y && this.piece.equals(other.piece);
+        return this.x == other.x && this.y == other.y;
     }
 
     @Override

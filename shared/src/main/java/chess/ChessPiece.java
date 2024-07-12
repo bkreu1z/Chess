@@ -95,4 +95,9 @@ public class ChessPiece {
         ChessPiece other = (ChessPiece) o;
         return this.getTeamColor().equals(other.getTeamColor()) && this.getPieceType().equals(other.getPieceType());
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s", color, type);
+    }
 }

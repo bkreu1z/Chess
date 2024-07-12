@@ -62,4 +62,9 @@ public class ChessMove {
         }
         return hash;
     }
+
+    @Override
+    public String toString() {
+        return String.format("start: %s, end: %s", start.toString(), end.toString());
+    }
 }
