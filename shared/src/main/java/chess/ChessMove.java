@@ -58,7 +58,6 @@ public class ChessMove {
     public int hashCode() {
         int hash = this.start.hashCode() * 11 + this.end.hashCode() * 31;
         if (this.promotionType != null) {
-            this.promotionType.hashCode();
             hash += this.promotionType.hashCode();
         }
         return hash;

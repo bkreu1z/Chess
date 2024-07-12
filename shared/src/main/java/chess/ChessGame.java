@@ -172,7 +172,7 @@ public class ChessGame {
     public boolean isInCheckmate(TeamColor teamColor) {
         for (ChessPosition[] row : board.spaces) {
             for (ChessPosition square : row) {
-                if (board.getPiece(square).getTeamColor() == teamColor) {
+                if (board.getPiece(square) != null && board.getPiece(square).getTeamColor() == teamColor) {
                     for (ChessMove move : board.getPiece(square).pieceMoves(board, square)) {
                         try {
                             makeMove(move);
@@ -196,7 +196,7 @@ public class ChessGame {
     public boolean isInStalemate(TeamColor teamColor) {
         for (ChessPosition[] row : board.spaces) {
             for (ChessPosition square : row) {
-                if (board.getPiece(square).getTeamColor() == teamColor) {
+                if (board.getPiece(square) != null && board.getPiece(square).getTeamColor() == teamColor) {
                     if (board.getPiece(square).pieceMoves(board, square) != null) {
                         return false;
                     }
