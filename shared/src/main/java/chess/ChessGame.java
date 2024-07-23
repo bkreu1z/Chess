@@ -70,7 +70,8 @@ public class ChessGame {
                 unmakeMove(move);
                 board.addPiece(move.getEndPosition(), capturedPiece);
                 setTeamTurn(ogColor);
-            } catch (InvalidMoveException e) {}//I don't know what to put in the catch block, so I'll just make sure it works and figure it out later
+            } catch (InvalidMoveException e) {
+                System.out.println("Error: " + e.getMessage());}
         }
         return validMoves;
     }
@@ -186,7 +187,9 @@ public class ChessGame {
                             board.addPiece(move.getEndPosition(), capturedPiece);
                             setTeamTurn(ogColor);
                             return false;
-                        } catch (InvalidMoveException e) {}//I also don't know what to put in this one
+                        } catch (InvalidMoveException e) {
+                            System.out.println("Error: " + e.getMessage());
+                        }
                     }
                 }
             }
