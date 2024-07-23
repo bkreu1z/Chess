@@ -10,9 +10,7 @@ import spark.Response;
 import spark.Route;
 import com.google.gson.Gson;
 
-public class RegisterHandler implements Route {
-    UserService userService = new UserService();
-    Gson gson = new Gson();
+public class RegisterHandler implements Route, HandlerInterface{
 
     public Object handle(Request request, Response response) throws Exception {
         RegisterRequest register = gson.fromJson(request.body(), RegisterRequest.class);

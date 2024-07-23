@@ -1,5 +1,6 @@
 package Handlers;
 
+import Responses.Message;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import service.ClearService;
@@ -9,9 +10,7 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
-public class ClearHandler implements Route {
-    ClearService clearService = new ClearService();
-    Gson gson = new Gson();
+public class ClearHandler implements Route, HandlerInterface {
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
@@ -27,7 +26,7 @@ public class ClearHandler implements Route {
             return gson.toJson(result);
         } catch (DataAccessException e) {
             response.status(500);
-            String message = e.getMessage();
+            Message message = new Message(e.getMessage());
             return gson.toJson(message);
         }
     }
