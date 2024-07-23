@@ -7,7 +7,7 @@ import java.util.Set;
 public interface GameInterface {
     MemoryGameDAO memoryGameDAO = new MemoryGameDAO();
 
-    int createGame(String gameName) throws Exception;
+    int createGame(String gameName);
 
     boolean getGameByName(String gameName);
 

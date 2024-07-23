@@ -14,50 +14,43 @@ public abstract class StraightLinesMoveCalculator {
         int up = myPosition.getRow() + 1;
         int down = myPosition.getRow() - 1;
         while (up <= 8) {
-            if (board.getPiece(new ChessPosition(up, currentX)) == null){
-                octMoves.add(new ChessPosition(up, currentX));
-            } else {
-                if (color != board.getPiece(new ChessPosition(up, currentX)).getTeamColor()) {
-                    octMoves.add(new ChessPosition(up, currentX));
-                }
+            if (!octMovesHelper(currentX, up, board, color, octMoves)) {
                 break;
             }
             up++;
         }
         while (down > 0) {
-            if (board.getPiece(new ChessPosition(down, currentX)) == null){
-                octMoves.add(new ChessPosition(down, currentX));
-            } else {
-                if (color != board.getPiece(new ChessPosition(down, currentX)).getTeamColor()) {
-                    octMoves.add(new ChessPosition(down, currentX));
-                }
+            if (!octMovesHelper(currentX, down, board, color, octMoves)) {
                 break;
             }
             down--;
         }
         while (left > 0) {
-            if (board.getPiece(new ChessPosition(currentY, left)) == null){
-                octMoves.add(new ChessPosition(currentY, left));
-            } else {
-                if (color != board.getPiece(new ChessPosition(currentY, left)).getTeamColor()) {
-                    octMoves.add(new ChessPosition(currentY, left));
-                }
+            if (!octMovesHelper(left, currentY, board, color, octMoves)) {
                 break;
             }
             left--;
         }
         while (right <= 8) {
-            if (board.getPiece(new ChessPosition(currentY, right)) == null){
-                octMoves.add(new ChessPosition(currentY, right));
-            } else {
-                if (color != board.getPiece(new ChessPosition(currentY, right)).getTeamColor()) {
-                    octMoves.add(new ChessPosition(currentY, right));
-                }
+            if (!octMovesHelper(right, currentY, board, color, octMoves)) {
                 break;
             }
             right++;
         }
         return octMoves;
+    }
+
+    public boolean octMovesHelper(int newX, int newY, ChessBoard board, ChessGame.TeamColor color, Set<ChessPosition> octMoves) {
+        ChessPosition position = new ChessPosition(newY, newX);
+        if (board.getPiece(position) == null){
+            octMoves.add(position);
+            return true;
+        } else {
+            if (color != board.getPiece(position).getTeamColor()) {
+                octMoves.add(position);
+            }
+            return false;
+        }
     }
 
     public Set<ChessPosition> findDiagonalMoves(ChessBoard board, ChessPosition myPosition) {
@@ -66,59 +59,84 @@ public abstract class StraightLinesMoveCalculator {
         int currentY = myPosition.getRow();
         ChessGame.TeamColor color = board.getPiece(myPosition).getTeamColor();
         while (currentX < 8 && currentY < 8) {
-            if (board.getPiece(new ChessPosition(currentY + 1, currentX + 1)) == null) {
+            if (!diagonalMovesHelper(currentY + 1, currentX + 1, board, color, diagonalMoves)) {
+                break;
+            }
+            /*if (board.getPiece(new ChessPosition(currentY + 1, currentX + 1)) == null) {
                 diagonalMoves.add(new ChessPosition(currentY + 1, currentX + 1));
             } else {
                 if (color != board.getPiece(new ChessPosition(currentY + 1, currentX + 1)).getTeamColor()) {
                 diagonalMoves.add(new ChessPosition(currentY + 1, currentX + 1));
                 }
                 break;
-            }
+            }*/
             currentX++;
             currentY++;
         }
         currentX = myPosition.getColumn();
         currentY = myPosition.getRow();
         while (currentX < 8 && currentY > 1) {
-            if (board.getPiece(new ChessPosition(currentY - 1,currentX + 1)) == null) {
+            if (!diagonalMovesHelper(currentY - 1, currentX + 1, board, color, diagonalMoves)) {
+                break;
+            }
+            /*if (board.getPiece(new ChessPosition(currentY - 1,currentX + 1)) == null) {
                 diagonalMoves.add(new ChessPosition(currentY - 1,currentX + 1));
             } else {
                 if (color != board.getPiece(new ChessPosition(currentY - 1,currentX + 1)).getTeamColor()) {
                     diagonalMoves.add(new ChessPosition(currentY - 1, currentX + 1));
                 }
                 break;
-            }
+            }*/
             currentX++;
             currentY--;
         }
         currentX = myPosition.getColumn();
         currentY = myPosition.getRow();
         while (currentX > 1 && currentY > 1) {
-            if (board.getPiece(new ChessPosition(currentY - 1, currentX - 1)) == null) {
+            if (!diagonalMovesHelper(currentY - 1, currentX - 1, board, color, diagonalMoves)) {
+                break;
+            }
+            /*if (board.getPiece(new ChessPosition(currentY - 1, currentX - 1)) == null) {
                 diagonalMoves.add(new ChessPosition(currentY - 1, currentX - 1));
             } else {
                 if (color != board.getPiece(new ChessPosition(currentY - 1, currentX - 1)).getTeamColor()) {
                     diagonalMoves.add(new ChessPosition(currentY - 1, currentX - 1));
                 }
                 break;
-            }
+            }*/
             currentX--;
             currentY--;
         }
         currentX = myPosition.getColumn();
         currentY = myPosition.getRow();
         while (currentX > 1 && currentY < 8) {
-            if (board.getPiece(new ChessPosition(currentY + 1,currentX - 1)) == null) {
+            if (!diagonalMovesHelper(currentY + 1, currentX - 1, board, color, diagonalMoves)) {
+                break;
+            }
+            /*if (board.getPiece(new ChessPosition(currentY + 1,currentX - 1)) == null) {
                 diagonalMoves.add(new ChessPosition(currentY + 1,currentX - 1));
             } else {
                 if (color != board.getPiece(new ChessPosition(currentY + 1,currentX - 1)).getTeamColor()) {
                     diagonalMoves.add(new ChessPosition(currentY + 1,currentX - 1));
                 }
                 break;
-            }
+            }*/
             currentX--;
             currentY++;
         }
         return diagonalMoves;
+    }
+
+    public boolean diagonalMovesHelper(int newY, int newX, ChessBoard board, ChessGame.TeamColor color, Set<ChessPosition> diagonalMoves) {
+        ChessPosition position = new ChessPosition(newY, newX);
+        if (board.getPiece(position) == null) {
+            diagonalMoves.add(position);
+            return true;
+        } else {
+            if (color != board.getPiece(position).getTeamColor()) {
+                diagonalMoves.add(position);
+            }
+            return false;
+        }
     }
 }

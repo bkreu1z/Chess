@@ -6,13 +6,8 @@ import java.util.Set;
 
 public class GameDAO implements GameInterface {
     @Override
-    public int createGame(String gameName) throws DataAccessException {
-        if (!getGameByName(gameName)) {
-            return memoryGameDAO.addGame(gameName);
-        }
-        else {
-            throw new DataAccessException("Game name already taken");
-        }
+    public int createGame(String gameName) {
+        return memoryGameDAO.addGame(gameName);
     }
 
     @Override

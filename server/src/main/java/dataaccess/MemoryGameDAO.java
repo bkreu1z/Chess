@@ -3,13 +3,16 @@ package dataaccess;
 import chess.ChessGame;
 import model.GameData;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class MemoryGameDAO {
     Set<GameData> games;
     int currentID = 1;
 
-    public MemoryGameDAO() {}
+    public MemoryGameDAO() {
+        games = new HashSet<>();
+    }
 
     public int addGame(String gameName) {
         games.add(new GameData(currentID, null, null, gameName, new ChessGame()));
@@ -19,6 +22,9 @@ public class MemoryGameDAO {
     }
 
     public boolean getGameByName(String gameName) {
+        if (games == null) {
+            return false;
+        }
         for (GameData gameData : games) {
             if (gameData.gameName().equals(gameName)) {
                 return true;
@@ -32,6 +38,9 @@ public class MemoryGameDAO {
     }
 
     public boolean joinGame(String username, String playerColor, int gameID) {
+        if (games == null) {
+            return false;
+        }
         for (GameData gameData : games) {
             if (gameData.gameID() == gameID) {
                 String whiteName = gameData.whiteUsername();
