@@ -1,6 +1,3 @@
 package Requests;
 
-//import spark.Request;
-
-public class CreateRequest {
-}
+public record CreateRequest(String authToken, String gameName) {}

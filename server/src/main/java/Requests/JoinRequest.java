@@ -1,4 +1,4 @@
 package Requests;
 
-public class JoinRequest {
+public record JoinRequest(String authToken, String playerColor, int gameID) {
 }

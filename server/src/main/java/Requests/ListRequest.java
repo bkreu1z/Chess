@@ -1,4 +1,4 @@
 package Requests;
 
-public class ListRequest {
+public record ListRequest(String authToken) {
 }
