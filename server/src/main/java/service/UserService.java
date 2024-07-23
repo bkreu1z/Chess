@@ -32,5 +32,13 @@ public class UserService {
         }
     }
 
-    public LogoutResult logoutUser(LogoutRequest request) throws DataAccessException {}
+    public LogoutResult logoutUser(LogoutRequest request) throws DataAccessException {
+        if (authDAO.getAuth(request.authToken())) {
+            authDAO.deleteAuth(request.authToken());
+            return new LogoutResult();
+        }
+        else {
+            throw new DataAccessException("Error: unauthorized");
+        }
+    }
 }

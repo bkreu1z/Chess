@@ -2,12 +2,15 @@ package dataaccess;
 
 import model.AuthData;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class MemoryAuthDAO {
     Set<AuthData> authDataSet;
 
-    public MemoryAuthDAO() {}
+    public MemoryAuthDAO() {
+        authDataSet = new HashSet<>();
+    }
 
     public void addAuthData(AuthData authData) {
         if (authDataSet != null) {
