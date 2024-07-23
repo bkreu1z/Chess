@@ -5,7 +5,6 @@ import model.AuthData;
 import java.util.UUID;
 
 public class AuthDAO implements AuthInterface{
-    MemoryAuthDAO memoryAuthDAO = new MemoryAuthDAO();
     @Override
         public String createAuth(String username) {
             String token = UUID.randomUUID().toString();
