@@ -10,10 +10,15 @@ public class MemoryAuthDAO {
     public MemoryAuthDAO() {}
 
     public void addAuthData(AuthData authData) {
-        authDataSet.add(authData);
+        if (authDataSet != null) {
+            authDataSet.add(authData);
+        }
     }
 
     public boolean isInMemory(String token) {
+        if (authDataSet == null) {
+            return false;
+        }
         for (AuthData authData : authDataSet) {
             if (authData.authToken().equals(token)) {
                 return true;
@@ -23,10 +28,12 @@ public class MemoryAuthDAO {
     }
 
     public boolean deleteAuth(String token) {
-        for (AuthData authData : authDataSet) {
-            if (authData.authToken().equals(token)) {
-                authDataSet.remove(authData);
-                return true;
+        if (authDataSet != null) {
+            for (AuthData authData : authDataSet) {
+                if (authData.authToken().equals(token)) {
+                    authDataSet.remove(authData);
+                    return true;
+                }
             }
         }
         return false;
