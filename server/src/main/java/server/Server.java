@@ -10,7 +10,7 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-        Spark.post("/user", new RegisterHandler());
+        Spark.post("/user", new RegisterHandler());//classes need to implement Route interface
         Spark.post("/session", new LoginHandler());
         Spark.post("/game", new CreateGameHandler());
         Spark.delete("/session", new DeleteGameHandler());
