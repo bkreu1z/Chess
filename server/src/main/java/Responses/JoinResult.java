@@ -1,4 +1,4 @@
 package Responses;
 
-public class JoinResult {
+public record JoinResult() {
 }

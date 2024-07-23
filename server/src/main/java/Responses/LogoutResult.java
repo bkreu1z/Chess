@@ -1,4 +1,4 @@
 package Responses;
 
-public class LogoutResult {
+public record LogoutResult() {
 }

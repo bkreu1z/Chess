@@ -1,5 +1,5 @@
 package Responses;
 
 
-public class ClearResult {
+public record ClearResult() {
 }

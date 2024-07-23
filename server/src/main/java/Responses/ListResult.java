@@ -1,4 +1,8 @@
 package Responses;
 
-public class ListResult {
+import model.GameData;
+
+import java.util.Set;
+
+public record ListResult(Set<GameData> games) {
 }
