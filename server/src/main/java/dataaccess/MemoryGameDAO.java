@@ -64,6 +64,8 @@ public class MemoryGameDAO {
     }
 
     public void clear() {
-        games.clear();
+        if (games != null) {
+            games.clear();
+        }
     }
 }

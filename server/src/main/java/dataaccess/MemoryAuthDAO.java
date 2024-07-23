@@ -33,6 +33,8 @@ public class MemoryAuthDAO {
     }
 
     public void clear() {
-        authDataSet.clear();
+        if (authDataSet != null) {
+            authDataSet.clear();
+        }
     }
 }
