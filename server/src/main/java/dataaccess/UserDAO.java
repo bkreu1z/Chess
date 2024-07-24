@@ -2,6 +2,8 @@ package dataaccess;
 
 import model.UserData;
 
+import java.util.Set;
+
 public class UserDAO implements UserInterface{
     @Override
     public boolean createUser(String username, String password, String email) {
@@ -15,6 +17,11 @@ public class UserDAO implements UserInterface{
     @Override
     public boolean getUser(String username) {
         return memoryUserDAO.getUser(username);
+    }
+
+    @Override
+    public Set<UserData> getUsers() {
+        return memoryUserDAO.getUsers();
     }
 
     @Override

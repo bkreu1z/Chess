@@ -28,6 +28,10 @@ public class MemoryUserDAO {
         return false;
     }
 
+    public Set<UserData> getUsers() {
+        return users;
+    }
+
     public boolean verifyPassword(String username, String password) {
         if (users == null) {
             return false;
