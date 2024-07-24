@@ -17,10 +17,14 @@ public class PawnMoveCalculator implements MoveCalculator {
                     moves.add(new ChessPosition(y - 2, x));
                 }
             }
-            if (y - 1 >= 1 && x - 1 >= 1 && board.getPiece(new ChessPosition(y - 1, x - 1)) != null && board.getPiece(new ChessPosition(y - 1, x - 1)).getTeamColor() != color) {
+            if (y - 1 >= 1 && x - 1 >= 1
+                    && board.getPiece(new ChessPosition(y - 1, x - 1)) != null
+                    && board.getPiece(new ChessPosition(y - 1, x - 1)).getTeamColor() != color) {
                 moves.add(new ChessPosition(y - 1, x - 1));
             }
-            if (y - 1 >= 1 && x + 1 <= 8 && board.getPiece(new ChessPosition(y - 1, x + 1)) != null && board.getPiece(new ChessPosition(y - 1, x + 1)).getTeamColor() != color) {
+            if (y - 1 >= 1 && x + 1 <= 8
+                    && board.getPiece(new ChessPosition(y - 1, x + 1)) != null
+                    && board.getPiece(new ChessPosition(y - 1, x + 1)).getTeamColor() != color) {
                 moves.add(new ChessPosition(y - 1, x + 1));
             }
         }
@@ -31,10 +35,14 @@ public class PawnMoveCalculator implements MoveCalculator {
                     moves.add(new ChessPosition(y + 2, x));
                 }
             }
-            if (y + 1 <= 8 && x - 1 >= 1 && board.getPiece(new ChessPosition(y + 1, x - 1)) != null && board.getPiece(new ChessPosition(y + 1, x - 1)).getTeamColor() != color) {
+            if (y + 1 <= 8 && x - 1 >= 1
+                    && board.getPiece(new ChessPosition(y + 1, x - 1)) != null
+                    && board.getPiece(new ChessPosition(y + 1, x - 1)).getTeamColor() != color) {
                 moves.add(new ChessPosition(y + 1, x - 1));
             }
-            if (y + 1 <= 8 && x + 1 <= 8 && board.getPiece(new ChessPosition(y + 1, x + 1)) != null && board.getPiece(new ChessPosition(y + 1, x + 1)).getTeamColor() != color) {
+            if (y + 1 <= 8 && x + 1 <= 8
+                    && board.getPiece(new ChessPosition(y + 1, x + 1)) != null
+                    && board.getPiece(new ChessPosition(y + 1, x + 1)).getTeamColor() != color) {
                 moves.add(new ChessPosition(y + 1, x + 1));
             }
         }

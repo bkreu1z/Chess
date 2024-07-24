@@ -144,7 +144,8 @@ public class ChessGame {
         ChessPosition kingSpace = null;
         for (ChessPosition[] row : board.spaces) {
             for (ChessPosition square : row) {
-                if (board.getPiece(square) != null && board.getPiece(square).getPieceType() == ChessPiece.PieceType.KING && board.getPiece(square).getTeamColor() == teamColor) {
+                if (board.getPiece(square) != null && board.getPiece(square).getPieceType() == ChessPiece.PieceType.KING
+                        && board.getPiece(square).getTeamColor() == teamColor) {
                     kingSpace = square;
                     break;
                 }
@@ -154,7 +155,8 @@ public class ChessGame {
             for (ChessPosition square : row) {
                 if (board.getPiece(square) != null && board.getPiece(square).getTeamColor() != teamColor) {
                     for (ChessMove move : board.getPiece(square).pieceMoves(board, square)) {
-                        if (kingSpace != null && move.getEndPosition().getRow() == kingSpace.getRow() && move.getEndPosition().getColumn() == kingSpace.getColumn()) {
+                        if (kingSpace != null && move.getEndPosition().getRow() == kingSpace.getRow()
+                                && move.getEndPosition().getColumn() == kingSpace.getColumn()) {
                             return true;
                         }
                     }

@@ -65,13 +65,15 @@ public class ChessPiece {
         }
         Set<ChessPosition> positions = calculator.findMoves(board,myPosition);
         for (ChessPosition position : positions) {
-            if (position.getRow() == 1 && board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.PAWN && board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.BLACK) {
+            if (position.getRow() == 1 && board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.PAWN
+                    && board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.BLACK) {
                 moves.add(new ChessMove(myPosition, position, PieceType.QUEEN));
                 moves.add(new ChessMove(myPosition, position, PieceType.BISHOP));//this should account for pawns that make it to the other side
                 moves.add(new ChessMove(myPosition, position, PieceType.KNIGHT));
                 moves.add(new ChessMove(myPosition, position, PieceType.ROOK));
             }
-            else if (position.getRow() == 8 && board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.PAWN && board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.WHITE) {
+            else if (position.getRow() == 8 && board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.PAWN
+                    && board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.WHITE) {
                 moves.add(new ChessMove(myPosition, position, PieceType.QUEEN));
                 moves.add(new ChessMove(myPosition, position, PieceType.BISHOP));
                 moves.add(new ChessMove(myPosition, position, PieceType.KNIGHT));
