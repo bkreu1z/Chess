@@ -62,14 +62,6 @@ public abstract class StraightLinesMoveCalculator {
             if (!diagonalMovesHelper(currentY + 1, currentX + 1, board, color, diagonalMoves)) {
                 break;
             }
-            /*if (board.getPiece(new ChessPosition(currentY + 1, currentX + 1)) == null) {
-                diagonalMoves.add(new ChessPosition(currentY + 1, currentX + 1));
-            } else {
-                if (color != board.getPiece(new ChessPosition(currentY + 1, currentX + 1)).getTeamColor()) {
-                diagonalMoves.add(new ChessPosition(currentY + 1, currentX + 1));
-                }
-                break;
-            }*/
             currentX++;
             currentY++;
         }
@@ -79,14 +71,6 @@ public abstract class StraightLinesMoveCalculator {
             if (!diagonalMovesHelper(currentY - 1, currentX + 1, board, color, diagonalMoves)) {
                 break;
             }
-            /*if (board.getPiece(new ChessPosition(currentY - 1,currentX + 1)) == null) {
-                diagonalMoves.add(new ChessPosition(currentY - 1,currentX + 1));
-            } else {
-                if (color != board.getPiece(new ChessPosition(currentY - 1,currentX + 1)).getTeamColor()) {
-                    diagonalMoves.add(new ChessPosition(currentY - 1, currentX + 1));
-                }
-                break;
-            }*/
             currentX++;
             currentY--;
         }
@@ -96,14 +80,6 @@ public abstract class StraightLinesMoveCalculator {
             if (!diagonalMovesHelper(currentY - 1, currentX - 1, board, color, diagonalMoves)) {
                 break;
             }
-            /*if (board.getPiece(new ChessPosition(currentY - 1, currentX - 1)) == null) {
-                diagonalMoves.add(new ChessPosition(currentY - 1, currentX - 1));
-            } else {
-                if (color != board.getPiece(new ChessPosition(currentY - 1, currentX - 1)).getTeamColor()) {
-                    diagonalMoves.add(new ChessPosition(currentY - 1, currentX - 1));
-                }
-                break;
-            }*/
             currentX--;
             currentY--;
         }
@@ -113,14 +89,6 @@ public abstract class StraightLinesMoveCalculator {
             if (!diagonalMovesHelper(currentY + 1, currentX - 1, board, color, diagonalMoves)) {
                 break;
             }
-            /*if (board.getPiece(new ChessPosition(currentY + 1,currentX - 1)) == null) {
-                diagonalMoves.add(new ChessPosition(currentY + 1,currentX - 1));
-            } else {
-                if (color != board.getPiece(new ChessPosition(currentY + 1,currentX - 1)).getTeamColor()) {
-                    diagonalMoves.add(new ChessPosition(currentY + 1,currentX - 1));
-                }
-                break;
-            }*/
             currentX--;
             currentY++;
         }
