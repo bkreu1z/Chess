@@ -14,9 +14,9 @@ public class MemoryGameDAO {
         games = new HashSet<>();
     }
 
-    public int addGame(String gameName) {
-        games.add(new GameData(currentID, null, null, gameName, new ChessGame()));
-        int gameID = currentID;
+    public String addGame(String gameName) {
+        String gameID = Integer.toString(currentID);
+        games.add(new GameData(gameID, null, null, gameName, new ChessGame()));
         currentID++;
         return gameID;
     }
@@ -37,12 +37,12 @@ public class MemoryGameDAO {
         return games;
     }
 
-    public boolean joinGame(String username, String playerColor, int gameID) {
+    public boolean joinGame(String username, String playerColor, String gameID) {
         if (games == null) {
             return false;
         }
         for (GameData gameData : games) {
-            if (gameData.gameID() == gameID) {
+            if (gameData.gameID().equals(gameID)) {
                 String whiteName = gameData.whiteUsername();
                 String blackName = gameData.blackUsername();
                 String gameName = gameData.gameName();

@@ -30,6 +30,17 @@ public class MemoryAuthDAO {
         return false;
     }
 
+    public String getUsername(String token) {
+        if (authDataSet != null) {
+            for (AuthData authData : authDataSet) {
+                if (authData.authToken().equals(token)) {
+                    return authData.username();
+                }
+            }
+        }
+        return null;
+    }
+
     public boolean deleteAuth(String token) {
         if (authDataSet != null) {
             for (AuthData authData : authDataSet) {

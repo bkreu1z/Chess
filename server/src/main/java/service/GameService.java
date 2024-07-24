@@ -1,8 +1,10 @@
 package service;
 
 import Requests.CreateRequest;
+import Requests.JoinRequest;
 import Requests.ListRequest;
 import Responses.CreateResult;
+import Responses.JoinResult;
 import Responses.ListResult;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
@@ -17,8 +19,8 @@ public class GameService {
 
     public CreateResult createGame(CreateRequest request) throws Exception {
         if (authDAO.getAuth(request.authToken())) {
-            Integer gameID = gameDAO.createGame(request.gameName());
-            return new CreateResult(gameID.toString());
+            String gameID = gameDAO.createGame(request.gameName());
+            return new CreateResult(gameID);
         }
         else {
             throw new DataAccessException("Error: unauthorized");
@@ -29,6 +31,19 @@ public class GameService {
         if (authDAO.getAuth(request.authToken())) {
             Set<GameData> games = gameDAO.getAllGames();
             return new ListResult(games);
+        }
+        else {
+            throw new DataAccessException("Error: unauthorized");
+        }
+    }
+
+    public JoinResult joinGame(JoinRequest request) throws Exception {
+        if (authDAO.getAuth(request.authToken())) {
+            String username = authDAO.getUsername(request.authToken());
+            if (!gameDAO.joinGame(username, request.playerColor(), request.gameID())) {
+                throw new DataAccessException("Error: already taken");
+            }
+            return new JoinResult();
         }
         else {
             throw new DataAccessException("Error: unauthorized");

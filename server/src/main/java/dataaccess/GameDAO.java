@@ -6,7 +6,7 @@ import java.util.Set;
 
 public class GameDAO implements GameInterface {
     @Override
-    public int createGame(String gameName) {
+    public String createGame(String gameName) {
         return memoryGameDAO.addGame(gameName);
     }
 
@@ -21,7 +21,7 @@ public class GameDAO implements GameInterface {
     }
 
     @Override
-    public boolean joinGame(String username, String playerColor, int gameID) {
+    public boolean joinGame(String username, String playerColor, String gameID) {
         return memoryGameDAO.joinGame(username, playerColor, gameID);
     }
 

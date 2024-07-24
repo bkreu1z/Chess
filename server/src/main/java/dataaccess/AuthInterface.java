@@ -9,6 +9,8 @@ public interface AuthInterface {
 
     boolean getAuth(String token);
 
+    String getUsername(String token);
+
     boolean deleteAuth(String token);
 
     void clear();

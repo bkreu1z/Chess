@@ -7,13 +7,13 @@ import java.util.Set;
 public interface GameInterface {
     MemoryGameDAO memoryGameDAO = new MemoryGameDAO();
 
-    int createGame(String gameName);
+    String createGame(String gameName);
 
     boolean getGameByName(String gameName);
 
     Set<GameData> getAllGames();
 
-    boolean joinGame(String username, String playerColor, int gameID);
+    boolean joinGame(String username, String playerColor, String gameID);
 
     boolean deleteGame(String gameName);
 
