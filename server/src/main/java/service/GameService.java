@@ -1,11 +1,11 @@
 package service;
 
-import Requests.CreateRequest;
-import Requests.JoinRequest;
-import Requests.ListRequest;
-import Responses.CreateResult;
-import Responses.JoinResult;
-import Responses.ListResult;
+import requests.CreateRequest;
+import requests.JoinRequest;
+import requests.ListRequest;
+import responses.CreateResult;
+import responses.JoinResult;
+import responses.ListResult;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;

@@ -65,25 +65,24 @@ public class ChessPiece {
         }
         Set<ChessPosition> positions = calculator.findMoves(board,myPosition);
         for (ChessPosition position : positions) {
-            if (position.getRow() == 1 && board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.PAWN
-                    && board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.BLACK) {
-                moves.add(new ChessMove(myPosition, position, PieceType.QUEEN));
-                moves.add(new ChessMove(myPosition, position, PieceType.BISHOP));//this should account for pawns that make it to the other side
-                moves.add(new ChessMove(myPosition, position, PieceType.KNIGHT));
-                moves.add(new ChessMove(myPosition, position, PieceType.ROOK));
-            }
-            else if (position.getRow() == 8 && board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.PAWN
-                    && board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.WHITE) {
-                moves.add(new ChessMove(myPosition, position, PieceType.QUEEN));
-                moves.add(new ChessMove(myPosition, position, PieceType.BISHOP));
-                moves.add(new ChessMove(myPosition, position, PieceType.KNIGHT));
-                moves.add(new ChessMove(myPosition, position, PieceType.ROOK));
+            if ((position.getRow() == 1 && board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.PAWN
+                    && board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.BLACK) ||
+                    (position.getRow() == 8 && board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.PAWN
+                    && board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.WHITE)) {
+                movesHelper(myPosition, position, moves);//this checks for pawns that made it to the other side
             }
             else {
                 moves.add(new ChessMove(myPosition, position, null));
             }
         }
         return moves;
+    }
+
+    public void movesHelper(ChessPosition myPosition, ChessPosition position, Set<ChessMove> moves) {
+        moves.add(new ChessMove(myPosition, position, PieceType.QUEEN));
+        moves.add(new ChessMove(myPosition, position, PieceType.BISHOP));
+        moves.add(new ChessMove(myPosition, position, PieceType.KNIGHT));
+        moves.add(new ChessMove(myPosition, position, PieceType.ROOK));
     }
 
     @Override

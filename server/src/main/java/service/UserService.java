@@ -1,11 +1,11 @@
 package service;
 
-import Requests.LoginRequest;
-import Requests.LogoutRequest;
-import Requests.RegisterRequest;
-import Responses.LoginResult;
-import Responses.LogoutResult;
-import Responses.RegisterResult;
+import requests.LoginRequest;
+import requests.LogoutRequest;
+import requests.RegisterRequest;
+import responses.LoginResult;
+import responses.LogoutResult;
+import responses.RegisterResult;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.UserDAO;

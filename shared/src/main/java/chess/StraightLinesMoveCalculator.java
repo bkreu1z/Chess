@@ -14,43 +14,30 @@ public abstract class StraightLinesMoveCalculator {
         int up = myPosition.getRow() + 1;
         int down = myPosition.getRow() - 1;
         while (up <= 8) {
-            if (!octMovesHelper(currentX, up, board, color, octMoves)) {
+            if (!movesHelper(up, currentX, board, color, octMoves)) {
                 break;
             }
             up++;
         }
         while (down > 0) {
-            if (!octMovesHelper(currentX, down, board, color, octMoves)) {
+            if (!movesHelper(down, currentX, board, color, octMoves)) {
                 break;
             }
             down--;
         }
         while (left > 0) {
-            if (!octMovesHelper(left, currentY, board, color, octMoves)) {
+            if (!movesHelper(currentY, left, board, color, octMoves)) {
                 break;
             }
             left--;
         }
         while (right <= 8) {
-            if (!octMovesHelper(right, currentY, board, color, octMoves)) {
+            if (!movesHelper(currentY, right, board, color, octMoves)) {
                 break;
             }
             right++;
         }
         return octMoves;
-    }
-
-    public boolean octMovesHelper(int newX, int newY, ChessBoard board, ChessGame.TeamColor color, Set<ChessPosition> octMoves) {
-        ChessPosition position = new ChessPosition(newY, newX);
-        if (board.getPiece(position) == null){
-            octMoves.add(position);
-            return true;
-        } else {
-            if (color != board.getPiece(position).getTeamColor()) {
-                octMoves.add(position);
-            }
-            return false;
-        }
     }
 
     public Set<ChessPosition> findDiagonalMoves(ChessBoard board, ChessPosition myPosition) {
@@ -59,7 +46,7 @@ public abstract class StraightLinesMoveCalculator {
         int currentY = myPosition.getRow();
         ChessGame.TeamColor color = board.getPiece(myPosition).getTeamColor();
         while (currentX < 8 && currentY < 8) {
-            if (!diagonalMovesHelper(currentY + 1, currentX + 1, board, color, diagonalMoves)) {
+            if (!movesHelper(currentY + 1, currentX + 1, board, color, diagonalMoves)) {
                 break;
             }
             currentX++;
@@ -68,7 +55,7 @@ public abstract class StraightLinesMoveCalculator {
         currentX = myPosition.getColumn();
         currentY = myPosition.getRow();
         while (currentX < 8 && currentY > 1) {
-            if (!diagonalMovesHelper(currentY - 1, currentX + 1, board, color, diagonalMoves)) {
+            if (!movesHelper(currentY - 1, currentX + 1, board, color, diagonalMoves)) {
                 break;
             }
             currentX++;
@@ -77,7 +64,7 @@ public abstract class StraightLinesMoveCalculator {
         currentX = myPosition.getColumn();
         currentY = myPosition.getRow();
         while (currentX > 1 && currentY > 1) {
-            if (!diagonalMovesHelper(currentY - 1, currentX - 1, board, color, diagonalMoves)) {
+            if (!movesHelper(currentY - 1, currentX - 1, board, color, diagonalMoves)) {
                 break;
             }
             currentX--;
@@ -86,7 +73,7 @@ public abstract class StraightLinesMoveCalculator {
         currentX = myPosition.getColumn();
         currentY = myPosition.getRow();
         while (currentX > 1 && currentY < 8) {
-            if (!diagonalMovesHelper(currentY + 1, currentX - 1, board, color, diagonalMoves)) {
+            if (!movesHelper(currentY + 1, currentX - 1, board, color, diagonalMoves)) {
                 break;
             }
             currentX--;
@@ -95,14 +82,14 @@ public abstract class StraightLinesMoveCalculator {
         return diagonalMoves;
     }
 
-    public boolean diagonalMovesHelper(int newY, int newX, ChessBoard board, ChessGame.TeamColor color, Set<ChessPosition> diagonalMoves) {
+    public boolean movesHelper(int newY, int newX, ChessBoard board, ChessGame.TeamColor color, Set<ChessPosition> moves) {
         ChessPosition position = new ChessPosition(newY, newX);
         if (board.getPiece(position) == null) {
-            diagonalMoves.add(position);
+            moves.add(position);
             return true;
         } else {
             if (color != board.getPiece(position).getTeamColor()) {
-                diagonalMoves.add(position);
+                moves.add(position);
             }
             return false;
         }

@@ -1,9 +1,7 @@
 package dataaccess;
 
-import model.AuthData;
-
 public interface AuthInterface {
-    MemoryAuthDAO memoryAuthDAO = new MemoryAuthDAO();
+    MemoryAuthDAO MEMORY_AUTH_DAO = new MemoryAuthDAO();
 
     String createAuth(String username);
 

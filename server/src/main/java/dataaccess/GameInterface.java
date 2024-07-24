@@ -5,7 +5,7 @@ import model.GameData;
 import java.util.Set;
 
 public interface GameInterface {
-    MemoryGameDAO memoryGameDAO = new MemoryGameDAO();
+    MemoryGameDAO MEMORY_GAME_DAO = new MemoryGameDAO();
 
     String createGame(String gameName);
 

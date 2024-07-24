@@ -5,7 +5,7 @@ import model.UserData;
 import java.util.Set;
 
 public interface UserInterface {
-    MemoryUserDAO memoryUserDAO = new MemoryUserDAO();
+    MemoryUserDAO MEMORY_USER_DAO = new MemoryUserDAO();
 
     boolean createUser(String username, String password, String email);
 

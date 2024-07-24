@@ -8,7 +8,7 @@ public class UserDAO implements UserInterface{
     @Override
     public boolean createUser(String username, String password, String email) {
         if (!getUser(username)) {
-            memoryUserDAO.addUser(new UserData(username, password, email));
+            MEMORY_USER_DAO.addUser(new UserData(username, password, email));
             return true;
         }
         return false;
@@ -16,26 +16,26 @@ public class UserDAO implements UserInterface{
 
     @Override
     public boolean getUser(String username) {
-        return memoryUserDAO.getUser(username);
+        return MEMORY_USER_DAO.getUser(username);
     }
 
     @Override
     public Set<UserData> getUsers() {
-        return memoryUserDAO.getUsers();
+        return MEMORY_USER_DAO.getUsers();
     }
 
     @Override
     public boolean verifyPassword(String username, String password) {
-        return memoryUserDAO.verifyPassword(username, password);
+        return MEMORY_USER_DAO.verifyPassword(username, password);
     }
 
     @Override
     public boolean deleteUser(String username) {
-        return memoryUserDAO.deleteUser(username);
+        return MEMORY_USER_DAO.deleteUser(username);
     }
 
     @Override
     public void clear() {
-        memoryUserDAO.clear();
+        MEMORY_USER_DAO.clear();
     }
 }
