@@ -10,46 +10,22 @@ public class KingMoveCalculator implements MoveCalculator {
         int x = myPosition.getColumn();
         int y = myPosition.getRow();
         ChessGame.TeamColor color = board.getPiece(myPosition).getTeamColor();
-        if (x + 1 <= 8) {
-            if (board.getPiece(new ChessPosition(y, x + 1)) == null || board.getPiece(new ChessPosition(y, x + 1)).getTeamColor() != color) {
-                moves.add(new ChessPosition(y, x + 1));
-            }
-            if (y + 1 <= 8) {
-                if (board.getPiece(new ChessPosition(y + 1, x + 1)) == null || board.getPiece(new ChessPosition(y + 1, x + 1)).getTeamColor() != color) {
-                    moves.add(new ChessPosition(y + 1, x + 1));
-                }
-            }
-            if (y - 1 >= 1) {
-                if (board.getPiece(new ChessPosition(y - 1, x + 1)) == null || board.getPiece(new ChessPosition(y - 1, x + 1)).getTeamColor() != color) {
-                    moves.add(new ChessPosition(y - 1, x + 1));
-                }
-            }
-        }
-        if (x - 1 >= 1) {
-            if (board.getPiece(new ChessPosition(y, x - 1)) == null || board.getPiece(new ChessPosition(y, x - 1)).getTeamColor() != color) {
-                moves.add(new ChessPosition(y, x - 1));
-            }
-            if (y + 1 <= 8) {
-                if (board.getPiece(new ChessPosition(y + 1, x - 1)) == null || board.getPiece(new ChessPosition(y + 1, x - 1)).getTeamColor() != color) {
-                    moves.add(new ChessPosition(y + 1, x - 1));
-                }
-            }
-            if (y - 1 >= 1) {
-                if (board.getPiece(new ChessPosition(y - 1, x - 1)) == null || board.getPiece(new ChessPosition(y - 1, x - 1)).getTeamColor() != color) {
-                    moves.add(new ChessPosition(y - 1, x - 1));
-                }
-            }
-        }
-        if (y + 1 <= 8) {
-            if (board.getPiece(new ChessPosition(y + 1, x)) == null || board.getPiece(new ChessPosition(y + 1, x)).getTeamColor() != color) {
-                moves.add(new ChessPosition(y + 1, x));
-            }
-        }
-        if (y - 1 >= 1) {
-            if (board.getPiece(new ChessPosition(y - 1, x)) == null || board.getPiece(new ChessPosition(y - 1, x)).getTeamColor() != color) {
-                moves.add(new ChessPosition(y - 1, x));
-            }
-        }
+        kingMoveHelper(x + 1, y, board, color, moves);
+        kingMoveHelper(x + 1, y + 1, board, color, moves);
+        kingMoveHelper(x + 1, y - 1, board, color, moves);
+        kingMoveHelper(x - 1, y, board, color, moves);
+        kingMoveHelper(x - 1, y + 1, board, color, moves);
+        kingMoveHelper(x - 1, y - 1, board, color, moves);
+        kingMoveHelper(x, y + 1, board, color, moves);
+        kingMoveHelper(x, y - 1, board, color, moves);
         return moves;
+    }
+
+    public void kingMoveHelper(int newX, int newY, ChessBoard board, ChessGame.TeamColor color, Set<ChessPosition> moves) {
+        if (1 <= newY && newY <= 8 && 1 <= newX && newX <= 8) {
+            if (board.getPiece(new ChessPosition(newY, newX)) == null || board.getPiece(new ChessPosition(newY, newX)).getTeamColor() != color) {
+                moves.add(new ChessPosition(newY, newX));
+            }
+        }
     }
 }
