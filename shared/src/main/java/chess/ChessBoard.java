@@ -1,5 +1,7 @@
 package chess;
 
+import java.util.Iterator;
+
 /**
  * A chessboard that can hold and rearrange chess pieces.
  * <p>

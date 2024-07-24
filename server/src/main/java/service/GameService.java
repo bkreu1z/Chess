@@ -17,7 +17,7 @@ public class GameService {
     GameDAO gameDAO = new GameDAO();
     AuthDAO authDAO = new AuthDAO();
 
-    public CreateResult createGame(CreateRequest request) throws Exception {
+    public CreateResult createGame(CreateRequest request) throws DataAccessException {
         if (authDAO.getAuth(request.authToken())) {
             String gameID = gameDAO.createGame(request.gameName());
             return new CreateResult(gameID);
