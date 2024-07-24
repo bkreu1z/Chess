@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -134,6 +135,16 @@ public class ChessGame {
         }
     }
 
+    public ArrayList<ChessPosition> makeIterator(ChessBoard board) {
+        ArrayList<ChessPosition> spacesList = new ArrayList<>();
+        for (ChessPosition[] row : board.spaces) {
+            for (ChessPosition piece : row) {
+                spacesList.add(piece);
+            }
+        }
+        return spacesList;
+    }
+
     /**
      * Determines if the given team is in check
      *
@@ -142,23 +153,20 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         ChessPosition kingSpace = null;
-        for (ChessPosition[] row : board.spaces) {
-            for (ChessPosition square : row) {
-                if (board.getPiece(square) != null && board.getPiece(square).getPieceType() == ChessPiece.PieceType.KING
-                        && board.getPiece(square).getTeamColor() == teamColor) {
-                    kingSpace = square;
-                    break;
-                }
+        ArrayList<ChessPosition> spacesList = makeIterator(board);
+        for (ChessPosition square : spacesList) {
+            if (board.getPiece(square) != null && board.getPiece(square).getPieceType() == ChessPiece.PieceType.KING
+                    && board.getPiece(square).getTeamColor() == teamColor) {
+                kingSpace = square;
+                break;
             }
         }
-        for (ChessPosition[] row : board.spaces) {
-            for (ChessPosition square : row) {
-                if (board.getPiece(square) != null && board.getPiece(square).getTeamColor() != teamColor) {
-                    for (ChessMove move : board.getPiece(square).pieceMoves(board, square)) {
-                        if (kingSpace != null && move.getEndPosition().getRow() == kingSpace.getRow()
-                                && move.getEndPosition().getColumn() == kingSpace.getColumn()) {
-                            return true;
-                        }
+        for (ChessPosition square : spacesList) {
+            if (board.getPiece(square) != null && board.getPiece(square).getTeamColor() != teamColor) {
+                for (ChessMove move : board.getPiece(square).pieceMoves(board, square)) {
+                    if (kingSpace != null && move.getEndPosition().getRow() == kingSpace.getRow()
+                            && move.getEndPosition().getColumn() == kingSpace.getColumn()) {
+                        return true;
                     }
                 }
             }
@@ -173,27 +181,33 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        for (ChessPosition[] row : board.spaces) {
-            for (ChessPosition square : row) {
-                if (board.getPiece(square) != null && board.getPiece(square).getTeamColor() == teamColor) {
-                    for (ChessMove move : board.getPiece(square).pieceMoves(board, square)) {
-                        try {
-                            ChessGame.TeamColor ogColor = getTeamTurn();
-                            ChessPiece capturedPiece = null;
-                            if (board.getPiece(move.getEndPosition()) != null) {
-                                capturedPiece = board.getPiece(move.getEndPosition());
-                            }
-                            setTeamTurn(board.getPiece(move.getStartPosition()).getTeamColor());
-                            makeMove(move);
-                            unmakeMove(move);
-                            board.addPiece(move.getEndPosition(), capturedPiece);
-                            setTeamTurn(ogColor);
-                            return false;
-                        } catch (InvalidMoveException e) {
-                            System.out.println("Error: " + e.getMessage());
-                        }
-                    }
+        ArrayList<ChessPosition> spacesList = makeIterator(board);
+        for (ChessPosition square : spacesList) {
+            if (board.getPiece(square) != null && board.getPiece(square).getTeamColor() == teamColor) {
+                if (!isInCheckmateHelper(square)) {
+                    return false;
                 }
+            }
+        }
+        return true;
+    }
+
+    public boolean isInCheckmateHelper(ChessPosition square) {
+        for (ChessMove move : board.getPiece(square).pieceMoves(board, square)) {
+            try {
+                ChessGame.TeamColor ogColor = getTeamTurn();
+                ChessPiece capturedPiece = null;
+                if (board.getPiece(move.getEndPosition()) != null) {
+                    capturedPiece = board.getPiece(move.getEndPosition());
+                }
+                setTeamTurn(board.getPiece(move.getStartPosition()).getTeamColor());
+                makeMove(move);
+                unmakeMove(move);
+                board.addPiece(move.getEndPosition(), capturedPiece);
+                setTeamTurn(ogColor);
+                return false;
+            } catch (InvalidMoveException e) {
+                System.out.println("Error: " + e.getMessage());
             }
         }
         return true;
@@ -210,12 +224,11 @@ public class ChessGame {
         if (isInCheck(teamColor)) {
             return false;
         }
-        for (ChessPosition[] row : board.spaces) {
-            for (ChessPosition square : row) {
-                if (board.getPiece(square) != null && board.getPiece(square).getTeamColor() == teamColor) {
-                    if (!validMoves(square).isEmpty()) {
-                        return false;
-                    }
+        ArrayList<ChessPosition> spacesList = makeIterator(board);
+        for (ChessPosition square : spacesList) {
+            if (board.getPiece(square) != null && board.getPiece(square).getTeamColor() == teamColor) {
+                if (!validMoves(square).isEmpty()) {
+                    return false;
                 }
             }
         }
