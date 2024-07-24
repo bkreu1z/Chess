@@ -1,11 +1,9 @@
-package Handlers;
+package handlers;
 
-import Responses.Message;
-import com.google.gson.Gson;
+import responses.Message;
 import dataaccess.DataAccessException;
-import service.ClearService;
 
-import Responses.ClearResult;
+import responses.ClearResult;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -21,13 +19,13 @@ public class ClearHandler implements Route, HandlerInterface {
         //reserialize response object
         try {
             String message = "Cleared Database Successfully";
-            ClearResult result = clearService.clear();
+            ClearResult result = CLEAR_SERVICE.clear();
             response.status(200);
-            return gson.toJson(result);
+            return GSON.toJson(result);
         } catch (DataAccessException e) {
             response.status(500);
             Message message = new Message(e.getMessage());
-            return gson.toJson(message);
+            return GSON.toJson(message);
         }
     }
 }

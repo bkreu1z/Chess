@@ -1,8 +1,8 @@
-package Handlers;
+package handlers;
 
-import Requests.ListRequest;
-import Responses.ListResult;
-import Responses.Message;
+import requests.ListRequest;
+import responses.ListResult;
+import responses.Message;
 import dataaccess.DataAccessException;
 import spark.Request;
 import spark.Response;
@@ -12,13 +12,13 @@ public class ListGamesHandler implements Route, HandlerInterface {
     public Object handle(Request request, Response response) throws Exception {
         ListRequest listRequest = new ListRequest(request.headers("authorization"));
         try {
-            ListResult listResult = gameService.listGames(listRequest);
+            ListResult listResult = GAME_SERVICE.listGames(listRequest);
             response.status(200);
-            return gson.toJson(listResult);
+            return GSON.toJson(listResult);
         } catch (DataAccessException e) {
             response.status(401);
             Message message = new Message(e.getMessage());
-            return gson.toJson(message);
+            return GSON.toJson(message);
         }
     }
 }

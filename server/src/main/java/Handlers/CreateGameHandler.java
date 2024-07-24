@@ -1,8 +1,8 @@
-package Handlers;
+package handlers;
 
-import Requests.CreateRequest;
-import Responses.CreateResult;
-import Responses.Message;
+import requests.CreateRequest;
+import responses.CreateResult;
+import responses.Message;
 import dataaccess.DataAccessException;
 import spark.Request;
 import spark.Response;
@@ -10,21 +10,21 @@ import spark.Route;
 
 public class CreateGameHandler implements Route, HandlerInterface {
     public Object handle(Request request, Response response) throws Exception {
-        CreateRequest createRequest = gson.fromJson(request.body(), CreateRequest.class);
+        CreateRequest createRequest = GSON.fromJson(request.body(), CreateRequest.class);
         createRequest = new CreateRequest(request.headers("authorization"), createRequest.gameName());
         if (createRequest.authToken() == null || createRequest.gameName() == null) {
             response.status(400);
             Message message = new Message("Error: bad request");
-            return gson.toJson(message);
+            return GSON.toJson(message);
         }
         try {
-            CreateResult createResult = gameService.createGame(createRequest);
+            CreateResult createResult = GAME_SERVICE.createGame(createRequest);
             response.status(200);
-            return gson.toJson(createResult);
+            return GSON.toJson(createResult);
         } catch (DataAccessException e) {
             response.status(401);
             Message message = new Message(e.getMessage());
-            return gson.toJson(message);
+            return GSON.toJson(message);
         }
     }
 }
