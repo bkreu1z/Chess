@@ -1,8 +1,8 @@
 package service;
 
-import Requests.RegisterRequest;
-import Responses.ClearResult;
-import Responses.RegisterResult;
+import requests.RegisterRequest;
+import responses.ClearResult;
+import responses.RegisterResult;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryUserDAO;
 import dataaccess.UserInterface;
