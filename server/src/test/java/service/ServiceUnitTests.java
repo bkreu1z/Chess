@@ -1,13 +1,7 @@
 package service;
 
-import requests.CreateRequest;
-import requests.LoginRequest;
-import requests.LogoutRequest;
-import requests.RegisterRequest;
-import responses.ClearResult;
-import responses.CreateResult;
-import responses.LoginResult;
-import responses.RegisterResult;
+import requests.*;
+import responses.*;
 import dataaccess.DataAccessException;
 import org.junit.jupiter.api.*;
 
@@ -20,21 +14,28 @@ public class ServiceUnitTests {
 
     @BeforeEach
     void setUp() {
+        clearService = new ClearService();
+        try {
+            clearService.clear();
+        } catch (DataAccessException e) {
+            System.out.println("Error while clearing service");
+        }
         userService = new UserService();
         gameService = new GameService();
-        RegisterResult registerResult = null;
+        String token = null;
         try {
-            registerResult = userService.registerUser(new RegisterRequest("username", "password", "notarealemail@hotmail.com"));
+            token = userService.registerUser(
+                    new RegisterRequest("username", "password", "notarealemail@hotmail.com")).authToken();
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
         try {
-            gameService.createGame(new CreateRequest(registerResult.authToken(),"gameName"));
+            gameService.createGame(new CreateRequest(token,"gameName"));
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
         try {
-            userService.logoutUser(new LogoutRequest(registerResult.authToken()));
+            userService.logoutUser(new LogoutRequest(token));
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
@@ -43,15 +44,16 @@ public class ServiceUnitTests {
     @Test
     void goodRegister() {
         userService = new UserService();
-        RegisterResult result = null;
+        String authToken = null;
         try {
-            result = userService.registerUser(new RegisterRequest("2kewl", "thecooliest", "notarealemail@hotmail.com"));
-            assertNotNull(result.authToken());
+            authToken = userService.registerUser(
+                    new RegisterRequest("2kewl", "thecooliest", "notarealemail@hotmail.com")).authToken();
+            assertNotNull(authToken);
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
         try {
-            userService.logoutUser(new LogoutRequest(result.authToken()));
+            userService.logoutUser(new LogoutRequest(authToken));
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
@@ -64,7 +66,8 @@ public class ServiceUnitTests {
         RegisterResult firstResult = null;
         RegisterResult secondResult = null;
         try {
-            firstResult = userService.registerUser(new RegisterRequest("2kewl", "thecooliest", "notarealemail@hotmail.com"));
+            firstResult = userService.registerUser(
+                    new RegisterRequest("2kewl", "thecooliest", "notarealemail@hotmail.com"));
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
@@ -81,13 +84,13 @@ public class ServiceUnitTests {
     @Test
     void goodLogin() {
         userService = new UserService();
-        LoginResult loginResult = null;
+        String token = null;
         try {
-            loginResult = userService.loginUser(new LoginRequest("username", "password"));
+            token = userService.loginUser(new LoginRequest("username", "password")).authToken();
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
-        assertNotNull(loginResult.authToken());
+        assertNotNull(token);
     }
 
     @Test
@@ -106,17 +109,18 @@ public class ServiceUnitTests {
 
     public boolean logOutHelper(String switcher) {
         userService = new UserService();
-        RegisterResult registerResult = null;
+        String token = "";
         boolean checker = true;
         try {
-            registerResult =
-                    userService.registerUser(new RegisterRequest("boringusername", "boringpassword", "boringemail@hotmail.com"));
+            token =
+                    userService.registerUser(
+                            new RegisterRequest("boringusername", "boringpassword", "boringemail@hotmail.com")).authToken();
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
         if (switcher.equals("good")) {
             try {
-                userService.logoutUser(new LogoutRequest(registerResult.authToken()));
+                userService.logoutUser(new LogoutRequest(token));
             } catch (DataAccessException e) {
                 System.out.println(e.getMessage());
                 checker = false;
@@ -150,19 +154,19 @@ public class ServiceUnitTests {
         userService = new UserService();
         gameService = new GameService();
         String authToken = null;
-        CreateResult createResult = null;
+        String gameID = "";
         try {
             authToken = userService.loginUser(new LoginRequest("username", "password")).authToken();
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
         try {
-            createResult = gameService.createGame(new CreateRequest(authToken,"Name"));
+            gameID = gameService.createGame(new CreateRequest(authToken,"Name")).gameID();
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
         String expected = "2";
-        assertEquals(expected, createResult.gameID());
+        assertEquals(expected, gameID);
     }
 
     @Test
@@ -179,9 +183,95 @@ public class ServiceUnitTests {
     }
 
     @Test
+    void goodListGames() {
+        userService = new UserService();
+        gameService = new GameService();
+        String authToken = "";
+        ListResult listResult = null;
+        try {
+            authToken = userService.registerUser(
+                    new RegisterRequest("mountain", "climber", "room@hotmail.com")).authToken();
+        } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
+        }
+        try {
+            listResult = gameService.listGames(new ListRequest(authToken));
+        } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
+        }
+        assertNotNull(listResult);
+    }
+
+    @Test
+    void badListGames() {
+        userService = new UserService();
+        gameService = new GameService();
+        boolean checker = false;
+        try {
+            gameService.listGames(new ListRequest("badtoken"));
+        } catch (DataAccessException e) {
+            checker = true;
+        }
+        assertTrue(checker);
+    }
+
+    @Test
+    void goodJoin() {
+        userService = new UserService();
+        gameService = new GameService();
+        String authToken = null;
+        String gameID = null;
+        JoinResult joinResult = null;
+        try {
+            authToken = userService.registerUser(
+                    new RegisterRequest("goodJoin", "goodJoin", "goodJoin@gmail.com")).authToken();
+        } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
+        }
+        try{
+            gameID = gameService.createGame(new CreateRequest(authToken, "George")).gameID();
+        } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
+        }
+        try {
+            joinResult = gameService.joinGame(new JoinRequest(authToken, "BLACK", gameID));
+        } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
+        }
+        assertNotNull(joinResult);
+    }
+
+    @Test
+    void badJoin() {
+        userService = new UserService();
+        gameService = new GameService();
+        String authToken = "badToken";
+        String gameID = "3";
+        JoinResult joinResult = null;
+        try {
+            joinResult = gameService.joinGame(new JoinRequest(authToken, "BLACK", gameID));
+        } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
+        }
+        assertNull(joinResult);
+    }
+
+    @Test
     void clear() {
-        goodRegister();
-        goodCreateGame();
+        userService = new UserService();
+        String token = " ";
+        try{
+            token = userService.registerUser(
+                    new RegisterRequest("anybody", "outthere", "room@hotmail.com")).authToken();
+        } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
+        }
+        gameService = new GameService();
+        try{
+            gameService.createGame(new CreateRequest(token, "Steve"));
+        } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
+        }
         ClearResult result = null;
         clearService = new ClearService();
         try {

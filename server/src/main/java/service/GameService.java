@@ -27,7 +27,7 @@ public class GameService {
         }
     }
 
-    public ListResult listGames(ListRequest request) throws Exception {
+    public ListResult listGames(ListRequest request) throws DataAccessException {
         if (authDAO.getAuth(request.authToken())) {
             Set<GameData> games = gameDAO.getAllGames();
             return new ListResult(games);
@@ -37,7 +37,7 @@ public class GameService {
         }
     }
 
-    public JoinResult joinGame(JoinRequest request) throws Exception {
+    public JoinResult joinGame(JoinRequest request) throws DataAccessException {
         if (authDAO.getAuth(request.authToken())) {
             String username = authDAO.getUsername(request.authToken());
             if (!gameDAO.joinGame(username, request.playerColor(), request.gameID())) {
