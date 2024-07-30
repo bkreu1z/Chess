@@ -1,15 +1,12 @@
 package service;
 
-import dataaccess.AuthDAO;
-import dataaccess.DataAccessException;
-import dataaccess.GameDAO;
-import dataaccess.UserDAO;
+import dataaccess.*;
 import responses.ClearResult;
 
 public class ClearService {
-    GameDAO gameDAO = new GameDAO();
-    UserDAO userDAO = new UserDAO();
-    AuthDAO authDAO = new AuthDAO();
+    GameInterface gameDAO = new SQLGameDAO();
+    UserInterface userDAO = new SQLUserDAO();
+    AuthInterface authDAO = new SQLAuthDAO();
 
     public ClearResult clear() throws DataAccessException {
         gameDAO.clear();

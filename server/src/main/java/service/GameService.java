@@ -1,21 +1,19 @@
 package service;
 
+import dataaccess.*;
 import requests.CreateRequest;
 import requests.JoinRequest;
 import requests.ListRequest;
 import responses.CreateResult;
 import responses.JoinResult;
 import responses.ListResult;
-import dataaccess.AuthDAO;
-import dataaccess.DataAccessException;
-import dataaccess.GameDAO;
 import model.GameData;
 
 import java.util.Set;
 
 public class GameService {
-    GameDAO gameDAO = new GameDAO();
-    AuthDAO authDAO = new AuthDAO();
+    GameInterface gameDAO = new SQLGameDAO();
+    AuthInterface authDAO = new SQLAuthDAO();
 
     public CreateResult createGame(CreateRequest request) throws DataAccessException {
         if (authDAO.getAuth(request.authToken())) {

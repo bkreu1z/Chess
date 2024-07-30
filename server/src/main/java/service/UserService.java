@@ -1,18 +1,16 @@
 package service;
 
+import dataaccess.*;
 import requests.LoginRequest;
 import requests.LogoutRequest;
 import requests.RegisterRequest;
 import responses.LoginResult;
 import responses.LogoutResult;
 import responses.RegisterResult;
-import dataaccess.AuthDAO;
-import dataaccess.DataAccessException;
-import dataaccess.UserDAO;
 
 public class UserService {
-    AuthDAO authDAO = new AuthDAO();
-    UserDAO userDAO = new UserDAO();
+    AuthInterface authDAO = new SQLAuthDAO();
+    UserInterface userDAO = new SQLUserDAO();
 
     public RegisterResult registerUser(RegisterRequest request) throws DataAccessException {
         if (!userDAO.createUser(request.username(), request.password(), request.email())) {
