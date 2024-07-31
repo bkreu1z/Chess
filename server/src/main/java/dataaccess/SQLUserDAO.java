@@ -26,7 +26,7 @@ public class SQLUserDAO implements UserInterface {
     @Override
     public boolean getUser(String username) throws DataAccessException{
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT id, username FROM users WHERE username = '" + username + "'";
+            var statement = "SELECT id, username FROM users WHERE username = \"" + username + "\"";
             try (var ps = conn.prepareStatement(statement)) {
                 try (var rs = ps.executeQuery()) {
                     if (rs.next()) {
@@ -61,7 +61,7 @@ public class SQLUserDAO implements UserInterface {
     @Override
     public boolean verifyPassword(String username, String password) {
         try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT id, password FROM users WHERE username = '" + username + "'";
+            var statement = "SELECT id, password FROM users WHERE username = \"" + username + "\"";
             try (var ps = conn.prepareStatement(statement)) {
                 try (var rs = ps.executeQuery()) {
                     if (rs.next()) {

@@ -42,11 +42,6 @@ public class Server {
         Spark.init();
 
         Spark.awaitInitialization();
-        try {
-            clearDatabase();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
         return Spark.port();
     }
 

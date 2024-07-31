@@ -46,7 +46,7 @@ public class SQLAuthDAO implements AuthInterface{
     @Override
     public boolean getAuth(String token) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT id FROM auth WHERE token = '" + token + "'";
+            var statement = "SELECT id FROM auth WHERE token = \"" + token + "\"";
             try (var ps = conn.prepareStatement(statement)) {
                 try (var rs = ps.executeQuery()) {
                     if (rs.next()) {
@@ -64,7 +64,7 @@ public class SQLAuthDAO implements AuthInterface{
     public String getUsername(String token) throws DataAccessException {
         String username = "";
         try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT authusername FROM auth WHERE token = '" + token + "'";
+            var statement = "SELECT authusername FROM auth WHERE token = \"" + token + "\"";
             try (var ps = conn.prepareStatement(statement)) {
                 try (var rs = ps.executeQuery()) {
                     if (rs.next()) {

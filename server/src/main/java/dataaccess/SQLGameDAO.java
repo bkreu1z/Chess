@@ -23,7 +23,7 @@ public class SQLGameDAO implements GameInterface {
         } catch (Exception e) {
             throw new DataAccessException("could not create game");
         }
-        var idStatement = "SELECT id FROM games WHERE gameName = '" + gameName + "'";
+        var idStatement = "SELECT id FROM games WHERE `gameName` = \"" + gameName + "\"";
         try (Connection conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(idStatement)) {
                 try (var rs = ps.executeQuery()) {
@@ -40,7 +40,7 @@ public class SQLGameDAO implements GameInterface {
 
     @Override
     public boolean getGameByName(String gameName) throws DataAccessException {
-        var statement = "SELECT * FROM games WHERE gameName = '" + gameName + "'";
+        var statement = "SELECT * FROM games WHERE gameName = \"" + gameName + "\"";
         try (Connection conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement)) {
                 try (var rs = ps.executeQuery()) {
@@ -75,7 +75,7 @@ public class SQLGameDAO implements GameInterface {
     }
 
     private boolean checkColorNull(String playerColor, String gameID) throws DataAccessException {
-        var statement = "SELECT * FROM games WHERE id = '" + gameID + "'";
+        var statement = "SELECT * FROM games WHERE id = \"" + gameID + "\"";
         String color = null;
         switch (playerColor) {
             case "WHITE" -> color = "whiteUsername";
@@ -105,7 +105,7 @@ public class SQLGameDAO implements GameInterface {
             return false;
         }
         String color = null;
-        var statement = "SELECT * FROM games WHERE id = '" + gameID + "'";
+        var statement = "SELECT * FROM games WHERE id = \"" + gameID + "\"";
         if (playerColor.equals("WHITE")) {
             statement = "UPDATE games SET whiteUsername = ? WHERE id = ?";
         }
