@@ -46,25 +46,32 @@ public class Server {
     private final String[] createStatements = {
             """
 CREATE TABLE IF NOT EXISTS users (
-'id' int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-'username' varchar(255) NOT NULL,
-'password' varchar(255) NOT NULL
-'email' varchar(255) NOT NULL,
-'authid' int NULL DEFAULT NULL,
-foreign key ('authid') references auth ('id'),
-)
+ `id` int NOT NULL AUTO_INCREMENT,
+ `username` varchar(255) NOT NULL,
+ `password` varchar(255) NOT NULL,
+ `email` varchar(255) NOT NULL,
+ PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+""",
+            """
+
 CREATE TABLE IF NOT EXISTS auth (
-'id' int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-'token' varchar(255) NOT NULL,)
-'username' varchar(255) NOT NULL,
-)
+ `id` int NOT NULL AUTO_INCREMENT,
+ `token` varchar(255) NOT NULL,
+ `authusername` varchar(255) NOT NULL,
+ PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+""",
+            """
+
 CREATE TABLE IF NOT EXISTS games (
-'id' int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-'whiteUsername' varchar(255) NULL,
-'blackUsername' varchar(255) NULL,
-'gameName' varchar(255) NOT NULL,
-'game' varchar(255) NOT NULL,
-)
+ `id` int NOT NULL AUTO_INCREMENT,
+ `whiteUsername` varchar(255) NULL,
+ `blackUsername` varchar(255) NULL,
+ `gameName` varchar(255) NOT NULL,
+ `game` varchar(255) NOT NULL,
+ PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 """
     };
 
@@ -76,7 +83,7 @@ CREATE TABLE IF NOT EXISTS games (
         }
         try (var conn = DatabaseManager.getConnection()) {
             for (var statement : createStatements) {
-                try(var preparedStatement = conn.prepareStatement(statement)) {
+                try (var preparedStatement = conn.prepareStatement(statement)) {
                     preparedStatement.executeUpdate();
                 }
             }
