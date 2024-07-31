@@ -9,7 +9,7 @@ import static java.sql.Types.NULL;
 
 public class SQLAuthDAO implements AuthInterface{
 
-    private int executeUpdate(String statement, Object... params) throws DataAccessException {
+    public static int executeUpdate(String statement, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement, Statement.RETURN_GENERATED_KEYS)) {
                 for (var i = 0; i < params.length; i++) {
@@ -34,9 +34,9 @@ public class SQLAuthDAO implements AuthInterface{
     @Override
     public String createAuth(String username) throws DataAccessException {
         String token = UUID.randomUUID().toString();
-        var statement = "INSERT INTO auth (username, token) VALUES (?, ?)";
+        var statement = "INSERT INTO auth (authusername, token) VALUES (?, ?)";
         try {
-            executeUpdate(statement);
+            executeUpdate(statement, username, token);
         } catch (Exception e) {
             throw new DataAccessException("could not create Authtoken");
         }
@@ -46,7 +46,7 @@ public class SQLAuthDAO implements AuthInterface{
     @Override
     public boolean getAuth(String token) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT id FROM auth WHERE token = ?";
+            var statement = "SELECT id FROM auth WHERE token = '" + token + "'";
             try (var ps = conn.prepareStatement(statement)) {
                 try (var rs = ps.executeQuery()) {
                     if (rs.next()) {
@@ -64,11 +64,11 @@ public class SQLAuthDAO implements AuthInterface{
     public String getUsername(String token) throws DataAccessException {
         String username = "";
         try (Connection conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT username FROM auth WHERE token = ?";
+            var statement = "SELECT authusername FROM auth WHERE token = '" + token + "'";
             try (var ps = conn.prepareStatement(statement)) {
                 try (var rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        username = rs.getString("username");
+                        username = rs.getString("authusername");
                     }
                 }
             }
@@ -82,7 +82,7 @@ public class SQLAuthDAO implements AuthInterface{
     public boolean deleteAuth(String token) {
         var statement = "DELETE FROM auth WHERE token = ?";
         try {
-            executeUpdate(statement);
+            executeUpdate(statement, token);
         } catch (Exception e) {
             return false;
         }
