@@ -5,11 +5,8 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
-
-import static java.sql.Types.NULL;
 
 public class SQLUserDAO implements UserInterface {
     @Override
