@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS games (
  `whiteUsername` varchar(255) NULL,
  `blackUsername` varchar(255) NULL,
  `gameName` varchar(255) NOT NULL,
- `game` varchar(255) NOT NULL,
+ `game` varchar(3000) NOT NULL,
  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 """
