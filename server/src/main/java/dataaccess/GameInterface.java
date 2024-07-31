@@ -9,9 +9,9 @@ public interface GameInterface {
 
     String createGame(String gameName) throws DataAccessException;
 
-    boolean getGameByName(String gameName);
+    boolean getGameByName(String gameName) throws DataAccessException;
 
-    Set<GameData> getAllGames();
+    Set<GameData> getAllGames() throws DataAccessException;
 
     boolean joinGame(String username, String playerColor, String gameID);
 
