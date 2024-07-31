@@ -75,17 +75,17 @@ public class SQLGameDAO implements GameInterface {
     }
 
     private boolean checkColorNull(String playerColor, String gameID) throws DataAccessException {
-        var statement = "SELECT * FROM games WHERE gameID = '" + gameID + "'";
+        var statement = "SELECT * FROM games WHERE id = '" + gameID + "'";
         String color = null;
         switch (playerColor) {
-            case "WHITE": color = "whiteUsername";
-            case "BLACK": color = "blackUsername";
+            case "WHITE" -> color = "whiteUsername";
+            case "BLACK" -> color = "blackUsername";
         }
         try (Connection conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement)) {
                 try (var rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        return rs.getString("'" + color + "'") == null;
+                        return rs.getString(color) == null;
                     }
                 }
             }
@@ -105,13 +105,15 @@ public class SQLGameDAO implements GameInterface {
             return false;
         }
         String color = null;
-        switch (playerColor) {
-            case "WHITE": color = "whiteUsername";
-            case "BLACK": color = "blackUsername";
+        var statement = "SELECT * FROM games WHERE id = '" + gameID + "'";
+        if (playerColor.equals("WHITE")) {
+            statement = "UPDATE games SET whiteUsername = ? WHERE id = ?";
         }
-        var statement = "UPDATE games SET '" + color + "' = '" + username + "' WHERE gameID = '" + gameID + "'";
+        else if (playerColor.equals("BLACK")) {
+            statement = "UPDATE games SET blackUsername = ? WHERE id = ?";
+        }
         try {
-            SQLAuthDAO.executeUpdate(statement);
+            SQLAuthDAO.executeUpdate(statement, username, gameID);
         } catch (Exception e) {
             return false;
         }

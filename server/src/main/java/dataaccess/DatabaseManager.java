@@ -69,4 +69,24 @@ public class DatabaseManager {
             throw new DataAccessException(e.getMessage());
         }
     }
+
+    public static void clearDatabase() throws DataAccessException {
+        try {
+            var userStatement = "DROP TABLE IF EXISTS user";
+            var authStatement = "DROP TABLE IF EXISTS auth";
+            var gameStatement = "DROP TABLE IF EXISTS game";
+            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+            try (var preparedStatement = conn.prepareStatement(userStatement)) {
+                preparedStatement.executeUpdate();
+            }
+            try (var preparedStatement = conn.prepareStatement(authStatement)) {
+                preparedStatement.executeUpdate();
+            }
+            try (var preparedStatement = conn.prepareStatement(gameStatement)) {
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
 }
