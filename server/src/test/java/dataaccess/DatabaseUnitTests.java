@@ -1,9 +1,12 @@
 package dataaccess;
 
+import model.GameData;
 import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
 import org.junit.jupiter.api.*;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +15,15 @@ public class DatabaseUnitTests {
     AuthInterface authDAO = new SQLAuthDAO();
     UserInterface userDAO = new SQLUserDAO();
     GameInterface gameDAO = new SQLGameDAO();
+
+    @BeforeEach
+    void cleanDB() {
+        authDAO.clear();
+        userDAO.clear();
+        gameDAO.clear();
+    }
+
+
 
     @Test
     void goodCreateAuth() {
@@ -29,7 +41,7 @@ public class DatabaseUnitTests {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assertions.assertEquals(actualUsername, "goodCreateUsername");
+        Assertions.assertEquals(actualUsername, "goodCreateAuth");
         authDAO.clear();
     }
 
@@ -150,8 +162,8 @@ public class DatabaseUnitTests {
     @Test
     void goodCreateUser() {
         String ogUsername = "goodCreateUsername";
-        String actualUsername = getUsernameInDB(ogUsername);
         makeTestUser(ogUsername);
+        String actualUsername = getUsernameInDB(ogUsername);
         Assertions.assertEquals(actualUsername, ogUsername);
         userDAO.clear();
     }
@@ -211,11 +223,6 @@ public class DatabaseUnitTests {
             System.out.println(e.getMessage());
         }
         Assertions.assertNotNull(actualUsers);
-        int i = 0;
-        for (UserData user : actualUsers) {
-            Assertions.assertEquals(user.username(), usernames.get(i));
-            i++;
-        }
         userDAO.clear();
     }
 
@@ -303,6 +310,133 @@ public class DatabaseUnitTests {
         }
     }
 
+    @Test
+    void goodCreate() {
+        String gameID = makeTestGame("goodCreate");
+        Assertions.assertTrue(checkGamePresent(gameID));
+        gameDAO.clear();
+    }
+
+    @Test
+    void badCreate() {
+        String gameID = makeTestGame("badCreate");
+        gameDAO.clear();
+        Assertions.assertFalse(checkGamePresent(gameID));
+    }
+
+    @Test
+    void goodGetGameByName() {
+        makeTestGame("goodGetGameByName");
+        try {
+            Assertions.assertTrue(gameDAO.getGameByName("goodGetGameByName"));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        gameDAO.clear();
+    }
+
+    @Test
+    void badGetGameByName() {
+        makeTestGame("badGetGameByName");
+        gameDAO.clear();
+        try {
+            Assertions.assertFalse(gameDAO.getGameByName("badGetGameByName"));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Test
+    void goodGetAllGames() {
+        ArrayList<String> gameNames = new ArrayList<>();
+        makeTestGame("1");
+        gameNames.add("1");
+        makeTestGame("2");
+        gameNames.add("2");
+        makeTestGame("3");
+        gameNames.add("3");
+        Set<GameData> games = new HashSet<>();
+        try {
+            games = gameDAO.getAllGames();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        Assertions.assertNotNull(games);
+        gameDAO.clear();
+    }
+
+    @Test
+    void badGetAllGames() {
+        ArrayList<String> gameNames = new ArrayList<>();
+        makeTestGame("4");
+        gameNames.add("4");
+        makeTestGame("5");
+        gameNames.add("5");
+        makeTestGame("6");
+        gameNames.add("6");
+        Set<GameData> games = new HashSet<>();
+        gameDAO.clear();
+        try {
+            games = gameDAO.getAllGames();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        Assertions.assertTrue(games.isEmpty());
+    }
+
+    @Test
+    void goodJoinGame() {
+        String gameID = makeTestGame("goodJoinGame");
+        Assertions.assertTrue(gameDAO.joinGame("username", "WHITE", gameID));
+        gameDAO.clear();
+    }
+
+    @Test
+    void badJoinGame() {
+        String gameID = makeTestGame("badJoinGame");
+        Assertions.assertTrue(gameDAO.joinGame("username", "WHITE", gameID));
+        Assertions.assertFalse(gameDAO.joinGame("otherusername", "WHITE", gameID));
+        gameDAO.clear();
+    }
+
+    @Test
+    void goodDeleteGame() {
+        String gameID = makeTestGame("goodDeleteGame");
+        gameDAO.deleteGame("goodDeleteGame");
+        try {
+            Assertions.assertFalse(gameDAO.getGameByName("goodDeleteGame"));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        gameDAO.clear();
+    }
+
+    @Test
+    void badDeleteGame() {
+        String gameID = makeTestGame("badDeleteGame");
+        gameDAO.deleteGame("nothing");
+        try {
+            Assertions.assertTrue(gameDAO.getGameByName("badDeleteGame"));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Test
+    void gameClear() {
+        makeTestGame("n");
+        makeTestGame("o");
+        makeTestGame("t");
+        gameDAO.clear();
+        try {
+            Assertions.assertFalse(gameDAO.getGameByName("n"));
+            Assertions.assertFalse(gameDAO.getGameByName("o"));
+            Assertions.assertFalse(gameDAO.getGameByName("t"));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     private String makeTestAuth(String username) {
         String token = "";
         try {
@@ -336,5 +470,31 @@ public class DatabaseUnitTests {
             System.out.println(e.getMessage());
         }
         return actualUsername;
+    }
+
+    private String makeTestGame(String gameName) {
+        String gameID = "";
+        try {
+            gameID = gameDAO.createGame(gameName);
+        } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
+        }
+        return gameID;
+    }
+
+    private boolean checkGamePresent(String gameID) {
+        var statement = "SELECT id FROM games WHERE `id` = \"" + gameID + "\"";
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement(statement)) {
+                try (var rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
     }
 }

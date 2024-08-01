@@ -122,9 +122,9 @@ public class SQLGameDAO implements GameInterface {
 
     @Override
     public boolean deleteGame(String gameName) {
-        var statement = "DELETE FROM games WHERE gameName = '" + gameName + "'";
+        var statement = "DELETE FROM games WHERE gameName = ?";
         try {
-            SQLAuthDAO.executeUpdate(statement);
+            SQLAuthDAO.executeUpdate(statement, gameName);
         } catch (Exception e) {
             return false;
         }
