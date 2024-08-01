@@ -10,12 +10,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class SQLGameDAO implements GameInterface {
-    Gson GSON = new Gson();
+    Gson gson = new Gson();
 
     @Override
     public String createGame(String gameName) throws DataAccessException {
         ChessGame game = new ChessGame();
-        String gameJson = GSON.toJson(game);
+        String gameJson = gson.toJson(game);
         String gameID = "";
         var createStatement = "INSERT INTO games (gameName, game) VALUES (?, ?)";
         try {
@@ -40,7 +40,11 @@ public class SQLGameDAO implements GameInterface {
 
     @Override
     public boolean getGameByName(String gameName) throws DataAccessException {
-        var statement = "SELECT * FROM games WHERE gameName = \"" + gameName + "\"";
+        String statement = "SELECT * FROM games WHERE gameName = \"" + gameName + "\"";
+        return findGameHelper(statement);
+    }
+
+    public static boolean findGameHelper(String statement) {
         try (Connection conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement)) {
                 try (var rs = ps.executeQuery()) {
@@ -55,6 +59,7 @@ public class SQLGameDAO implements GameInterface {
         return false;
     }
 
+
     @Override
     public Set<GameData> getAllGames() throws DataAccessException {
         Set<GameData> games = new HashSet<>();
@@ -62,7 +67,7 @@ public class SQLGameDAO implements GameInterface {
         try (Connection conn = DatabaseManager.getConnection()) {try (var ps = conn.prepareStatement(statement)) {
             try (var rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    ChessGame game = GSON.fromJson(rs.getString("game"), ChessGame.class);
+                    ChessGame game = gson.fromJson(rs.getString("game"), ChessGame.class);
                     games.add(new GameData(rs.getString("id"), rs.getString("whiteUsername"),
                             rs.getString("blackUsername"), rs.getString("gameName"), game));
                 }

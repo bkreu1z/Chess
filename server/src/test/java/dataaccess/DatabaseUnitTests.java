@@ -6,7 +6,6 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.junit.jupiter.api.*;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -484,17 +483,6 @@ public class DatabaseUnitTests {
 
     private boolean checkGamePresent(String gameID) {
         var statement = "SELECT id FROM games WHERE `id` = \"" + gameID + "\"";
-        try (Connection conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement)) {
-                try (var rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        return true;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        return false;
+        return SQLGameDAO.findGameHelper(statement);
     }
 }

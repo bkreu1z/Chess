@@ -7,8 +7,6 @@ import spark.*;
 
 import java.sql.SQLException;
 
-import static dataaccess.DatabaseManager.clearDatabase;
-
 public class Server {
 
     public int run(int desiredPort) {
