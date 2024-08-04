@@ -10,6 +10,7 @@ public class Client {
     private final String serverUrl;
     private boolean signedIn = false;
     private String username;
+    private String authToken;
 
     public Client(String serverUrl, Repl repl) {
         server = new ServerFacade(serverUrl);
@@ -43,30 +44,64 @@ public class Client {
             username = params[0];
             String passUsername = params[0];
             String password = params[1];
-            server.login(passUsername, password);
+            authToken = server.login(passUsername, password);
             return String.format("You are logged in as %s", username);
         }
         return "Expected: <yourUserName> <yourPassword>";
     }
 
     public String register(String[] params) {
-        return "";
+        if (params.length >= 3) {
+            signedIn = true;
+            username = params[0];
+            String passUsername = params[0];
+            String password = params[1];
+            String email = params[2];
+            authToken = server.register(passUsername, password, email);
+            return String.format("You are registered as %s", username);
+        }
+        return "Expected: <yourUserName> <yourPassword> <yourEmail>";
     }
 
     public String logout() {
-        return "";
+        if (signedIn) {
+            signedIn = false;
+            server.logout(username, authToken);
+            authToken = null;
+            return "You are logged out";
+        }
+        return "You are not logged in, so you can not log out";
     }
 
     public String createGame(String[] params) {
-        return "";
+        if (!signedIn) {
+            return "You are not logged in";
+        }
+        if (params.length >= 1) {
+            String gameName = params[0];
+            server.createGame(authToken, gameName);
+        }
+        return "Expected: <gameName>";
     }
 
     public String listGames() {
-        return "";
+        if (!signedIn) {
+            return "You are not logged in";
+        }
+        return server.listGames(authToken);
     }
 
     public String playGame(String[] params) {
-        return "";
+        if (!signedIn) {
+            return "You are not logged in";
+        }
+        if (params.length >= 2) {
+            String gameNumber = params[0];
+            String playerColor = params[1];
+            server.joinGame(authToken, gameNumber, username, playerColor);
+            return String.format("You have joined the game as %s", playerColor);
+        }
+        return "Expected: <gameNumber> <playerColor>";
     }
 
     public String observeGame(String[] params) {
