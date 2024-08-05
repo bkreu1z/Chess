@@ -1,6 +1,8 @@
 package server;
 
 import com.google.gson.Gson;
+import requests.LoginRequest;
+import requests.RegisterRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,12 +21,14 @@ public class ServerFacade {
 
     public String login(String username, String password) {
         String path = "/session";
-        return makeRequest("POST", path, null, null);//I'm not sure how to format the request parameter to fit what it's supposed to look like
+        LoginRequest loginRequest = new LoginRequest(username, password);
+        return makeRequest("POST", path, loginRequest, null);//I'm not sure how to format the request parameter to fit what it's supposed to look like
     }
 
     public String register(String username, String password, String email) {
         String path = "/user";
-        return makeRequest("POST", path, null, null);
+        RegisterRequest registerRequest = new RegisterRequest(username, password, email);
+        return makeRequest("POST", path, registerRequest, null);
     }
 
     public void logout(String username, String authToken) {
@@ -69,8 +73,8 @@ public class ServerFacade {
         if (request != null) {
             http.addRequestProperty("Content-Type", "application/json");
             String reqData = new Gson().toJson(request);
-            try (OutputStream os = http.getOutputStream()) {
-                os.write(reqData.getBytes());//the example had "UTF-8" in the parenthesis here
+            try (OutputStream os = http.getOutputStream()) {//this is throwing an exception, something about the connection being denied
+                os.write(reqData.getBytes("UTF-8"));
             }
         }
     }

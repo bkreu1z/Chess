@@ -32,6 +32,10 @@ public class ChessPosition {
         return this.x;
     }
 
+    public ChessPiece getPiece() {
+        return this.piece;
+    }
+
     @Override
     public String toString() {
         if (this.piece == null) {

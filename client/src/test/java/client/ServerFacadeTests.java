@@ -2,11 +2,13 @@ package client;
 
 import org.junit.jupiter.api.*;
 import server.Server;
+import server.ServerFacade;
 
 
 public class ServerFacadeTests {
 
     private static Server server;
+    private ServerFacade facade = new ServerFacade("http://localhost:8080");
 
     @BeforeAll
     public static void init() {
@@ -24,6 +26,11 @@ public class ServerFacadeTests {
     @Test
     public void sampleTest() {
         Assertions.assertTrue(true);
+    }
+
+    @Test
+    public void goodRegister() {
+        facade.register("goodRegister","passRegister", "email@byu.edu");
     }
 
 }

@@ -1,8 +1,16 @@
 package ui;
 
+import chess.ChessBoard;
+import chess.ChessGame;
+import chess.ChessPiece;
+import chess.ChessPosition;
 import server.ServerFacade;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+
+import static ui.EscapeSequences.*;
+import static ui.EscapeSequences.RESET_BG_COLOR;
 
 public class Client {
     private final ServerFacade server;
@@ -31,6 +39,7 @@ public class Client {
                 case "list" -> listGames();
                 case "play" -> playGame(params);
                 case "observe" -> observeGame(params);
+                case "quit" -> "quit";
                 default -> help();
             };
         } catch (Exception e) {
@@ -104,29 +113,118 @@ public class Client {
         return "Expected: <gameNumber> <playerColor>";
     }
 
-    public String observeGame(String[] params) {
-        return "";
+    public void observeGame(String[] params) {
+        ChessGame game = new ChessGame();
+        printBoard(game, "BLACK");
+        System.out.println();
+        printBoard(game, "WHITE");
     }
 
     public String help() {
         if (!signedIn) {
             return """
-                    Since you are not signed in, you can either quit, login, or register,
+                    Since you are not signed in, you can either quit, login, register, or ask for help
                     using one of the following commands
-                    -quit
-                    -login <username> <password>
-                    -register <username> <password> <email>
+                    quit
+                    login <username> <password>
+                    register <username> <password> <email>
+                    help
                     """;
         }
         return """
                 You are currently signed in. You can logout, create a game, ask for a list
-                of the current games, play a game, or observe a game, using one of the following commands
-                -logout
-                -create <gameName>
-                after you have created a game you need to use the play command in order to join it
-                -list
-                -play <gameNumber> <playerColor>
-                -observe <gameNumber>
+                of the current games, play a game, observe a game, or ask for help
+                using one of the following commands
+                logout
+                create <gameName>
+                Warning: after you have created a game you need to use the play command in order to join it
+                list
+                play <gameNumber> <playerColor>
+                observe <gameNumber>
+                help
                 """;
+    }
+
+    public static void printBoard(ChessGame game, String bottomColor) {
+        ArrayList<String> boardString = makeRows(game.getBoard(), bottomColor);
+        if (bottomColor.equals("BLACK")) {
+            System.out.println(SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK + SET_TEXT_BOLD + "    h  g  f  e  d  c  b  a    " + RESET_BG_COLOR);
+            for (String row : boardString) {
+                System.out.print(row);
+            }
+            System.out.println(SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK + SET_TEXT_BOLD + "    h  g  f  e  d  c  b  a    " + RESET_BG_COLOR);
+            System.out.println(RESET_BG_COLOR + RESET_TEXT_COLOR);
+        }
+        if (bottomColor.equals("WHITE")) {
+            System.out.println(SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK + SET_TEXT_BOLD + "    a  b  c  d  e  f  g  h    " + RESET_BG_COLOR);
+            int currentRow = boardString.size() - 1;
+            while (currentRow >= 0) {
+                System.out.print(boardString.get(currentRow));
+                currentRow--;
+            }
+            System.out.println(SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK + SET_TEXT_BOLD + "    a  b  c  d  e  f  g  h    " + RESET_BG_COLOR);
+            System.out.println(RESET_BG_COLOR + RESET_TEXT_COLOR);
+        }
+    }
+
+    public static ArrayList<String> makeRows(ChessBoard board, String bottomColor) {
+        ArrayList<String> rowArray = new ArrayList<>();
+        int rowNum = 1;
+        if (bottomColor.equals("WHITE")) {
+            rowNum = 8;
+        }
+        boolean isLight = true;
+        String onSquare = "   ";
+        for (ChessPosition[] row : board.getSpaces()) {
+            StringBuilder builder = new StringBuilder();
+            builder.append(SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK + " " + rowNum + " ");
+            for (ChessPosition square : row) {
+                ChessPiece piece = square.getPiece();
+                String pieceColorName = "";
+                if (piece != null) {
+                    ChessPiece.PieceType pieceName = piece.getPieceType();
+                    ChessGame.TeamColor pieceColor = piece.getTeamColor();
+                    switch(pieceName) {
+                        case KING -> onSquare = " K ";
+                        case QUEEN -> onSquare = " Q ";
+                        case BISHOP -> onSquare = " B ";
+                        case KNIGHT -> onSquare = " N ";
+                        case ROOK -> onSquare = " R ";
+                        case PAWN -> onSquare = " P ";
+                    }
+                    switch (pieceColor) {
+                        case WHITE -> pieceColorName = SET_TEXT_COLOR_WHITE;
+                        case BLACK -> pieceColorName = SET_TEXT_COLOR_RED;
+                    }
+                }
+                else {
+                    onSquare = "   ";
+                }
+                if (isLight) {
+                    builder.append(SET_BG_COLOR_LIGHT_GREY + pieceColorName + onSquare);
+                    isLight = false;
+                }
+                else {
+                    builder.append(SET_BG_COLOR_DARK_GREY + pieceColorName + onSquare);
+                    isLight = true;
+                }
+            }
+            builder.append(SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK + " " + rowNum + " " + RESET_BG_COLOR + "\n");
+            if (isLight) {
+                isLight = false;
+            }
+            else {
+                isLight = true;
+            }
+            if (bottomColor.equals("WHITE")) {
+                rowNum--;
+            }
+            else {
+                rowNum++;
+            }
+            String finishedRow = builder.toString();
+            rowArray.add(finishedRow);
+        }
+        return rowArray;
     }
 }
