@@ -140,6 +140,10 @@ public class ServerFacadeTests {
     @Test
     public void goodList() {
         String authToken = facade.register("goodList","passList", "email@byu.edu");
+        facade.createGame(authToken, "I");
+        facade.createGame(authToken, "Love");
+        facade.createGame(authToken, "Pizza");
+
     }
 
 }

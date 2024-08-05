@@ -2,7 +2,7 @@ package dataaccess;
 
 import model.GameData;
 
-import java.util.Set;
+import java.util.ArrayList;
 
 public interface GameInterface {
     MemoryGameDAO MEMORY_GAME_DAO = new MemoryGameDAO();
@@ -11,7 +11,7 @@ public interface GameInterface {
 
     boolean getGameByName(String gameName) throws DataAccessException;
 
-    Set<GameData> getAllGames() throws DataAccessException;
+    ArrayList<GameData> getAllGames() throws DataAccessException;
 
     boolean joinGame(String username, String playerColor, String gameID);
 

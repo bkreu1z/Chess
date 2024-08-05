@@ -2,7 +2,7 @@ package dataaccess;
 
 import model.GameData;
 
-import java.util.Set;
+import java.util.ArrayList;
 
 public class GameDAO implements GameInterface {
     @Override
@@ -16,7 +16,7 @@ public class GameDAO implements GameInterface {
     }
 
     @Override
-    public Set<GameData> getAllGames() {
+    public ArrayList<GameData> getAllGames() {
         return MEMORY_GAME_DAO.listGames();
     }
 

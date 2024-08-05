@@ -1,6 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
+import model.GameData;
 import requests.CreateRequest;
 import requests.LoginRequest;
 import requests.RegisterRequest;
@@ -13,6 +14,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class ServerFacade {
     private final String serverUrl;
@@ -46,10 +48,13 @@ public class ServerFacade {
         makeRequest("DELETE", path, null, LogoutResult.class, authToken);
     }
 
-    public String listGames(String authToken) {//and this one
+    public ArrayList<GameData> listGames(String authToken) {
         String path = "/game";
-        makeRequest("GET", path, null, ListResult.class, authToken);
-        return "";
+        ListResult result = (ListResult)makeRequest("GET", path, null, ListResult.class, authToken);
+        if (result == null) {
+            return null;
+        }
+        return result.games();
     }
 
     public void createGame(String authToken, String gameName) {
@@ -77,9 +82,8 @@ public class ServerFacade {
             return readBody(http, responseClass);
 
         } catch (Exception e) {
-            System.out.println(e);
+            return null;
         }
-        return null;
     }
 
     private static void writeBody(Object request, HttpURLConnection http) throws Exception {

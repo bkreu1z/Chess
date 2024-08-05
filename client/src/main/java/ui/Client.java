@@ -4,10 +4,13 @@ import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
+import model.GameData;
 import server.ServerFacade;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Stream;
 
 import static ui.EscapeSequences.*;
 import static ui.EscapeSequences.RESET_BG_COLOR;
@@ -104,7 +107,29 @@ public class Client {
         if (!signedIn) {
             return "You are not logged in";
         }
-        return server.listGames(authToken);
+        StringBuilder builder = new StringBuilder();
+        ArrayList<GameData> games = server.listGames(authToken);
+        boolean first = true;
+        int offset = 1;
+        for (GameData gameData : games) {
+            if (first) {
+                offset = Integer.parseInt(gameData.gameID()) - 1;
+                first = false;
+            }
+            builder.append("Game Number: ");
+            builder.append(Integer.parseInt(gameData.gameID()) - offset);
+            builder.append("\n");
+            builder.append("Game Name: ");
+            builder.append(gameData.gameName());
+            builder.append("\n");
+            builder.append("White: ");
+            builder.append(gameData.whiteUsername());
+            builder.append("\n");
+            builder.append("Black: ");
+            builder.append(gameData.blackUsername());
+            builder.append("\n");
+        }
+        return builder.toString();
     }
 
     public String playGame(String[] params) {

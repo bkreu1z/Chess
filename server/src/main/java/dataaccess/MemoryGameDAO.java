@@ -3,15 +3,16 @@ package dataaccess;
 import chess.ChessGame;
 import model.GameData;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 public class MemoryGameDAO {
-    Set<GameData> games;
+    ArrayList<GameData> games;
     int currentID = 1;
 
     public MemoryGameDAO() {
-        games = new HashSet<>();
+        games = new ArrayList<>();
     }
 
     public String addGame(String gameName) {
@@ -33,7 +34,7 @@ public class MemoryGameDAO {
         return false;
     }
 
-    public Set<GameData> listGames() {
+    public ArrayList<GameData> listGames() {
         return games;
     }
 

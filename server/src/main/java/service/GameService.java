@@ -9,7 +9,7 @@ import responses.JoinResult;
 import responses.ListResult;
 import model.GameData;
 
-import java.util.Set;
+import java.util.ArrayList;
 
 public class GameService {
     GameInterface gameDAO = new SQLGameDAO();
@@ -27,7 +27,7 @@ public class GameService {
 
     public ListResult listGames(ListRequest request) throws DataAccessException {
         if (authDAO.getAuth(request.authToken())) {
-            Set<GameData> games = gameDAO.getAllGames();
+            ArrayList<GameData> games = gameDAO.getAllGames();
             return new ListResult(games);
         }
         else {

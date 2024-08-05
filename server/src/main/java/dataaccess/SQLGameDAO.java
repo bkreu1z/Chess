@@ -6,8 +6,7 @@ import com.google.gson.Gson;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
 
 public class SQLGameDAO implements GameInterface {
     Gson gson = new Gson();
@@ -61,8 +60,8 @@ public class SQLGameDAO implements GameInterface {
 
 
     @Override
-    public Set<GameData> getAllGames() throws DataAccessException {
-        Set<GameData> games = new HashSet<>();
+    public ArrayList<GameData> getAllGames() throws DataAccessException {
+        ArrayList<GameData> games = new ArrayList<>();
         var statement = "SELECT * FROM games";
         try (Connection conn = DatabaseManager.getConnection()) {try (var ps = conn.prepareStatement(statement)) {
             try (var rs = ps.executeQuery()) {

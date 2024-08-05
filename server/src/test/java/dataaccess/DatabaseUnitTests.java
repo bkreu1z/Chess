@@ -354,7 +354,7 @@ public class DatabaseUnitTests {
         gameNames.add("2");
         makeTestGame("3");
         gameNames.add("3");
-        Set<GameData> games = new HashSet<>();
+        ArrayList<GameData> games = new ArrayList<>();
         try {
             games = gameDAO.getAllGames();
         } catch (Exception e) {
@@ -373,7 +373,7 @@ public class DatabaseUnitTests {
         gameNames.add("5");
         makeTestGame("6");
         gameNames.add("6");
-        Set<GameData> games = new HashSet<>();
+        ArrayList<GameData> games = new ArrayList<>();
         gameDAO.clear();
         try {
             games = gameDAO.getAllGames();
