@@ -54,6 +54,9 @@ public class Client {
             String passUsername = params[0];
             String password = params[1];
             authToken = server.login(passUsername, password);
+            if (authToken == null) {
+                return "Sorry, the username and password entered didn't match our database. Please make sure you're typing the password correctly";
+            }
             return String.format("You are logged in as %s", username);
         }
         return "Expected: <yourUserName> <yourPassword>";

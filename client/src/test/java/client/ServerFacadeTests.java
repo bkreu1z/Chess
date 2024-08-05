@@ -86,4 +86,27 @@ public class ServerFacadeTests {
         authDAO.clear();
     }
 
+    @Test
+    public void goodLogin() {
+        String authToken = facade.register("goodLogin","passLogin", "email@byu.edu");
+        facade.logout(authToken);
+        String newAuthToken = facade.login("goodLogin","passLogin");
+        try {
+            Assertions.assertTrue(authDAO.getAuth(newAuthToken));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        userDAO.clear();
+        authDAO.clear();
+    }
+
+    @Test
+    public void badLogin() {
+        String authToken = facade.register("badLogin","passLogin", "email@byu.edu");
+        facade.logout(authToken);
+        Assertions.assertNull(facade.login("badLogin","wrongPassword"));
+        userDAO.clear();
+        authDAO.clear();
+    }
+
 }

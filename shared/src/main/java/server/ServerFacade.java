@@ -3,6 +3,7 @@ package server;
 import com.google.gson.Gson;
 import requests.LoginRequest;
 import requests.RegisterRequest;
+import responses.LoginResult;
 import responses.LogoutResult;
 import responses.RegisterResult;
 
@@ -24,8 +25,11 @@ public class ServerFacade {
     public String login(String username, String password) {
         String path = "/session";
         LoginRequest loginRequest = new LoginRequest(username, password);
-        makeRequest("POST", path, loginRequest, null, null);//I'm not sure how to format the request parameter to fit what it's supposed to look like
-        return "";
+        LoginResult result = (LoginResult)makeRequest("POST", path, loginRequest, LoginResult.class, null);
+        if (result == null) {
+            return null;
+        }
+        return result.authToken();
     }
 
     public String register(String username, String password, String email) {
