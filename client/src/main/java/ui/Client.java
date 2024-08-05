@@ -67,6 +67,9 @@ public class Client {
             String password = params[1];
             String email = params[2];
             authToken = server.register(passUsername, password, email);
+            if (authToken == null) {
+                return "Sorry, that username is already taken. Please try again with a different one";
+            }
             return String.format("You are registered as %s", username);
         }
         return "Expected: <yourUserName> <yourPassword> <yourEmail>";

@@ -3,6 +3,7 @@ package server;
 import com.google.gson.Gson;
 import requests.LoginRequest;
 import requests.RegisterRequest;
+import responses.RegisterResult;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,13 +23,18 @@ public class ServerFacade {
     public String login(String username, String password) {
         String path = "/session";
         LoginRequest loginRequest = new LoginRequest(username, password);
-        return makeRequest("POST", path, loginRequest, null);//I'm not sure how to format the request parameter to fit what it's supposed to look like
+        makeRequest("POST", path, loginRequest, null);//I'm not sure how to format the request parameter to fit what it's supposed to look like
+        return "";
     }
 
     public String register(String username, String password, String email) {
         String path = "/user";
         RegisterRequest registerRequest = new RegisterRequest(username, password, email);
-        return makeRequest("POST", path, registerRequest, null);
+        RegisterResult result = (RegisterResult)makeRequest("POST", path, registerRequest, RegisterResult.class);
+        if (result == null) {
+            return null;
+        }
+        return result.authToken();
     }
 
     public void logout(String username, String authToken) {
@@ -36,25 +42,28 @@ public class ServerFacade {
         makeRequest("DELETE", path, null, null);
     }
 
-    public String listGames(String authToken) {
+    public String listGames(String authToken) {//and this one
         String path = "/game";
-        return makeRequest("GET", path, null, null);
+        makeRequest("GET", path, null, null);//may need to finangle the response class here
+        return "";
     }
 
-    public String createGame(String authToken, String gameName) {
+    public String createGame(String authToken, String gameName) {//this one also has a header
         String path = "/game";
-        return makeRequest("POST", path, null, null);
+        makeRequest("POST", path, null, null);
+        return "";
     }
 
-    public void joinGame(String authToken, String gameID, String username, String playerColor) {
+    public void joinGame(String authToken, String gameID, String username, String playerColor) {//this one has a header
         String path = "/game";
         makeRequest("PUT", path, null, null);
     }
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) {
+    private Record makeRequest(String method, String path, Object request, Class<? extends Record> responseClass) {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            //http.addRequestProperty("AuthToken", "application/json");
             http.setRequestMethod(method);
             http.setDoOutput(true);
 
@@ -73,7 +82,7 @@ public class ServerFacade {
         if (request != null) {
             http.addRequestProperty("Content-Type", "application/json");
             String reqData = new Gson().toJson(request);
-            try (OutputStream os = http.getOutputStream()) {//this is throwing an exception, something about the connection being denied
+            try (OutputStream os = http.getOutputStream()) {
                 os.write(reqData.getBytes("UTF-8"));
             }
         }
@@ -86,16 +95,15 @@ public class ServerFacade {
         }
     }
 
-    private static <T> T readBody(HttpURLConnection http, Class<T> responseClass) throws IOException {
-        T response = null;
+    private static Record readBody(HttpURLConnection http, Class<?extends Record> responseClass) throws IOException {
         if (http.getContentLength() < 0) {
             try (InputStream respBody = http.getInputStream()) {
                 InputStreamReader reader = new InputStreamReader(respBody);
                 if (responseClass != null) {
-                    response = new Gson().fromJson(reader, responseClass);
+                    return new Gson().fromJson(reader, responseClass);
                 }
             }
         }
-        return response;
+        return null;
     }
 }
