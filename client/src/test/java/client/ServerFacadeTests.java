@@ -109,4 +109,37 @@ public class ServerFacadeTests {
         authDAO.clear();
     }
 
+    @Test
+    public void goodCreate() {
+        String authToken = facade.register("goodCreate","passCreate", "email@byu.edu");
+        facade.createGame(authToken, "NameOfGame");
+        try {
+            Assertions.assertTrue(gameDAO.getGameByName("NameOfGame"));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        userDAO.clear();
+        authDAO.clear();
+        gameDAO.clear();
+    }
+
+    @Test
+    public void badCreate() {
+        facade.register("badCreate","passCreate", "email@byu.edu");
+        facade.createGame("badToken", "Steven");
+        try {
+            Assertions.assertFalse(gameDAO.getGameByName("Steven"));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        authDAO.clear();
+        gameDAO.clear();
+        userDAO.clear();
+    }
+
+    @Test
+    public void goodList() {
+        String authToken = facade.register("goodList","passList", "email@byu.edu");
+    }
+
 }

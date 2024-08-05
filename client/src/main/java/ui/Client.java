@@ -95,6 +95,7 @@ public class Client {
         if (params.length >= 1) {
             String gameName = params[0];
             server.createGame(authToken, gameName);
+            return String.format("game %s created",gameName);
         }
         return "Expected: <gameName>";
     }
@@ -155,21 +156,25 @@ public class Client {
     public static void printBoard(ChessGame game, String bottomColor) {
         ArrayList<String> boardString = makeRows(game.getBoard(), bottomColor);
         if (bottomColor.equals("BLACK")) {
-            System.out.println(SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK + SET_TEXT_BOLD + "    h  g  f  e  d  c  b  a    " + RESET_BG_COLOR);
+            System.out.println(SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK + SET_TEXT_BOLD +
+                    "    h  g  f  e  d  c  b  a    " + RESET_BG_COLOR);
             for (String row : boardString) {
                 System.out.print(row);
             }
-            System.out.println(SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK + SET_TEXT_BOLD + "    h  g  f  e  d  c  b  a    " + RESET_BG_COLOR);
+            System.out.println(SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK + SET_TEXT_BOLD +
+                    "    h  g  f  e  d  c  b  a    " + RESET_BG_COLOR);
             System.out.println(RESET_BG_COLOR + RESET_TEXT_COLOR);
         }
         if (bottomColor.equals("WHITE")) {
-            System.out.println(SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK + SET_TEXT_BOLD + "    a  b  c  d  e  f  g  h    " + RESET_BG_COLOR);
+            System.out.println(SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK + SET_TEXT_BOLD +
+                    "    a  b  c  d  e  f  g  h    " + RESET_BG_COLOR);
             int currentRow = boardString.size() - 1;
             while (currentRow >= 0) {
                 System.out.print(boardString.get(currentRow));
                 currentRow--;
             }
-            System.out.println(SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK + SET_TEXT_BOLD + "    a  b  c  d  e  f  g  h    " + RESET_BG_COLOR);
+            System.out.println(SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK + SET_TEXT_BOLD +
+                    "    a  b  c  d  e  f  g  h    " + RESET_BG_COLOR);
             System.out.println(RESET_BG_COLOR + RESET_TEXT_COLOR);
         }
     }

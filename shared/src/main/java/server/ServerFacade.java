@@ -1,11 +1,10 @@
 package server;
 
 import com.google.gson.Gson;
+import requests.CreateRequest;
 import requests.LoginRequest;
 import requests.RegisterRequest;
-import responses.LoginResult;
-import responses.LogoutResult;
-import responses.RegisterResult;
+import responses.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,19 +43,19 @@ public class ServerFacade {
 
     public void logout(String authToken) {
         String path = "/session";
-        LogoutResult result = (LogoutResult) makeRequest("DELETE", path, null, LogoutResult.class, authToken);
+        makeRequest("DELETE", path, null, LogoutResult.class, authToken);
     }
 
     public String listGames(String authToken) {//and this one
         String path = "/game";
-        makeRequest("GET", path, null, null, authToken);//may need to finangle the response class here
+        makeRequest("GET", path, null, ListResult.class, authToken);
         return "";
     }
 
-    public String createGame(String authToken, String gameName) {//this one also has a header
+    public void createGame(String authToken, String gameName) {
         String path = "/game";
-        makeRequest("POST", path, null, null, authToken);
-        return "";
+        CreateRequest request = new CreateRequest(authToken, gameName);
+        makeRequest("POST", path, request, CreateResult.class, authToken);
     }
 
     public void joinGame(String authToken, String gameID, String username, String playerColor) {//this one has a header
@@ -71,10 +70,8 @@ public class ServerFacade {
             http.setRequestMethod(method);
             http.setDoOutput(true);
 
+            writeHeader(header, http);
             writeBody(request, http);
-            if (header != null) {
-                http.addRequestProperty("Authorization", header);
-            }
             http.connect();
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);
@@ -92,6 +89,12 @@ public class ServerFacade {
             try (OutputStream os = http.getOutputStream()) {
                 os.write(reqData.getBytes("UTF-8"));
             }
+        }
+    }
+
+    private static void writeHeader(String header, HttpURLConnection http) {
+        if (header != null) {
+            http.addRequestProperty("Authorization", header);
         }
     }
 
