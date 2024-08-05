@@ -113,11 +113,12 @@ public class Client {
         return "Expected: <gameNumber> <playerColor>";
     }
 
-    public void observeGame(String[] params) {
+    public String observeGame(String[] params) {
         ChessGame game = new ChessGame();
         printBoard(game, "BLACK");
         System.out.println();
         printBoard(game, "WHITE");
+        return "";
     }
 
     public String help() {
