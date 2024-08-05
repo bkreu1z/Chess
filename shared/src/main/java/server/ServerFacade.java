@@ -3,6 +3,7 @@ package server;
 import com.google.gson.Gson;
 import requests.LoginRequest;
 import requests.RegisterRequest;
+import responses.LogoutResult;
 import responses.RegisterResult;
 
 import java.io.IOException;
@@ -23,51 +24,53 @@ public class ServerFacade {
     public String login(String username, String password) {
         String path = "/session";
         LoginRequest loginRequest = new LoginRequest(username, password);
-        makeRequest("POST", path, loginRequest, null);//I'm not sure how to format the request parameter to fit what it's supposed to look like
+        makeRequest("POST", path, loginRequest, null, null);//I'm not sure how to format the request parameter to fit what it's supposed to look like
         return "";
     }
 
     public String register(String username, String password, String email) {
         String path = "/user";
         RegisterRequest registerRequest = new RegisterRequest(username, password, email);
-        RegisterResult result = (RegisterResult)makeRequest("POST", path, registerRequest, RegisterResult.class);
+        RegisterResult result = (RegisterResult)makeRequest("POST", path, registerRequest, RegisterResult.class, null);
         if (result == null) {
             return null;
         }
         return result.authToken();
     }
 
-    public void logout(String username, String authToken) {
+    public void logout(String authToken) {
         String path = "/session";
-        makeRequest("DELETE", path, null, null);
+        LogoutResult result = (LogoutResult) makeRequest("DELETE", path, null, LogoutResult.class, authToken);
     }
 
     public String listGames(String authToken) {//and this one
         String path = "/game";
-        makeRequest("GET", path, null, null);//may need to finangle the response class here
+        makeRequest("GET", path, null, null, authToken);//may need to finangle the response class here
         return "";
     }
 
     public String createGame(String authToken, String gameName) {//this one also has a header
         String path = "/game";
-        makeRequest("POST", path, null, null);
+        makeRequest("POST", path, null, null, authToken);
         return "";
     }
 
     public void joinGame(String authToken, String gameID, String username, String playerColor) {//this one has a header
         String path = "/game";
-        makeRequest("PUT", path, null, null);
+        makeRequest("PUT", path, null, null, authToken);
     }
 
-    private Record makeRequest(String method, String path, Object request, Class<? extends Record> responseClass) {
+    private Record makeRequest(String method, String path, Object request, Class<? extends Record> responseClass, String header) {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
-            //http.addRequestProperty("AuthToken", "application/json");
             http.setRequestMethod(method);
             http.setDoOutput(true);
 
             writeBody(request, http);
+            if (header != null) {
+                http.addRequestProperty("Authorization", header);
+            }
             http.connect();
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);

@@ -78,7 +78,7 @@ public class Client {
     public String logout() {
         if (signedIn) {
             signedIn = false;
-            server.logout(username, authToken);
+            server.logout(authToken);
             authToken = null;
             return "You are logged out";
         }

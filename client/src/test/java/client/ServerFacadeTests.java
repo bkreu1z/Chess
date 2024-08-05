@@ -4,6 +4,7 @@ import dataaccess.SQLAuthDAO;
 import dataaccess.SQLGameDAO;
 import dataaccess.SQLUserDAO;
 import org.junit.jupiter.api.*;
+import requests.LogoutRequest;
 import server.Server;
 import server.ServerFacade;
 import service.ClearService;
@@ -58,6 +59,31 @@ public class ServerFacadeTests {
         facade.register("goodRegister","passRegister", "email@byu.edu");
         Assertions.assertNull(facade.register("goodRegister","passRegister", "email@byu.edu"));
         userDAO.clear();
+    }
+
+    @Test
+    public void goodLogout() {
+        String authToken = facade.register("goodLogout","passLogout", "email@byu.edu");
+        facade.logout(authToken);
+        try {
+            Assertions.assertFalse(authDAO.getAuth(authToken));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        userDAO.clear();
+    }
+
+    @Test
+    public void badLogout() {
+        String authToken = facade.register("goodLogout","passLogout", "email@byu.edu");
+        facade.logout("badtoken");
+        try {
+            Assertions.assertTrue(authDAO.getAuth(authToken));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        userDAO.clear();
+        authDAO.clear();
     }
 
 }
