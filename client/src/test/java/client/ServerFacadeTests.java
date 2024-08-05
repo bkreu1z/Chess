@@ -3,11 +3,14 @@ package client;
 import dataaccess.SQLAuthDAO;
 import dataaccess.SQLGameDAO;
 import dataaccess.SQLUserDAO;
+import model.GameData;
 import org.junit.jupiter.api.*;
 import requests.LogoutRequest;
 import server.Server;
 import server.ServerFacade;
 import service.ClearService;
+
+import java.util.ArrayList;
 
 
 public class ServerFacadeTests {
@@ -143,7 +146,32 @@ public class ServerFacadeTests {
         facade.createGame(authToken, "I");
         facade.createGame(authToken, "Love");
         facade.createGame(authToken, "Pizza");
+        ArrayList<GameData> gameData = facade.listGames(authToken);
+        Assertions.assertNotNull(gameData);
+        ArrayList<String> expectedNames = new ArrayList<>();
+        expectedNames.add("I");
+        expectedNames.add("Love");
+        expectedNames.add("Pizza");
+        ArrayList<String> actualNames = new ArrayList<>();
+        for (GameData game : gameData) {
+            actualNames.add(game.gameName());
+        }
+        Assertions.assertEquals(expectedNames, actualNames);
+        userDAO.clear();
+        authDAO.clear();
+        gameDAO.clear();
+    }
 
+    @Test
+    public void badList() {
+        String authToken = facade.register("badList","passList", "email@byu.edu");
+        facade.createGame(authToken, "Computers");
+        facade.createGame(authToken, "Are");
+        facade.createGame(authToken, "Cool");
+        Assertions.assertNull(facade.listGames("badToken"));
+        userDAO.clear();
+        authDAO.clear();
+        gameDAO.clear();
     }
 
 }
