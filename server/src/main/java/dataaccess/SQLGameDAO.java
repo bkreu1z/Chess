@@ -78,7 +78,7 @@ public class SQLGameDAO implements GameInterface {
         return games;
     }
 
-    private boolean checkColorNull(String playerColor, String gameID) throws DataAccessException {
+    public boolean checkColorNull(String playerColor, String gameID) throws DataAccessException {
         var statement = "SELECT * FROM games WHERE id = \"" + gameID + "\"";
         String color = null;
         switch (playerColor) {

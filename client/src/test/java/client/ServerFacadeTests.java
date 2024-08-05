@@ -174,4 +174,36 @@ public class ServerFacadeTests {
         gameDAO.clear();
     }
 
+    @Test
+    public void goodJoin() {
+        String authToken = facade.register("goodJoin","passJoin", "email@byu.edu");
+        facade.createGame(authToken, "Hyrum");
+        String gameID = facade.listGames(authToken).getFirst().gameID();
+        facade.joinGame(authToken, "WHITE", gameID);
+        try {
+            Assertions.assertFalse(gameDAO.checkColorNull("WHITE", gameID));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        userDAO.clear();
+        authDAO.clear();
+        gameDAO.clear();
+    }
+
+    @Test
+    public void badJoin() {
+        String authToken = facade.register("badJoin","passJoin", "email@byu.edu");
+        facade.createGame(authToken, "Abraham");
+        String gameID = facade.listGames(authToken).getFirst().gameID();
+        facade.joinGame(authToken, "WHITE", "badID");
+        try {
+            Assertions.assertTrue(gameDAO.checkColorNull("WHITE", gameID));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        userDAO.clear();
+        authDAO.clear();
+        gameDAO.clear();
+    }
+
 }

@@ -137,9 +137,12 @@ public class Client {
             return "You are not logged in";
         }
         if (params.length >= 2) {
-            String gameNumber = params[0];
-            String playerColor = params[1];
-            server.joinGame(authToken, gameNumber, username, playerColor);
+            ArrayList<GameData> games = server.listGames(authToken);
+            int offset = Integer.parseInt(games.getFirst().gameID()) - 1;
+            int gameNumber = Integer.parseInt(params[0]);
+            String passNumber = Integer.toString(gameNumber + offset);
+            String playerColor = params[1].toUpperCase();
+            server.joinGame(authToken, passNumber, playerColor);
             return String.format("You have joined the game as %s", playerColor);
         }
         return "Expected: <gameNumber> <playerColor>";

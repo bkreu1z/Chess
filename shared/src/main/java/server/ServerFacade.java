@@ -3,6 +3,7 @@ package server;
 import com.google.gson.Gson;
 import model.GameData;
 import requests.CreateRequest;
+import requests.JoinRequest;
 import requests.LoginRequest;
 import requests.RegisterRequest;
 import responses.*;
@@ -63,9 +64,10 @@ public class ServerFacade {
         makeRequest("POST", path, request, CreateResult.class, authToken);
     }
 
-    public void joinGame(String authToken, String gameID, String username, String playerColor) {//this one has a header
+    public void joinGame(String authToken, String gameID, String playerColor) {
         String path = "/game";
-        makeRequest("PUT", path, null, null, authToken);
+        JoinRequest request = new JoinRequest(authToken, gameID, playerColor);
+        makeRequest("PUT", path, request, JoinResult.class, authToken);
     }
 
     private Record makeRequest(String method, String path, Object request, Class<? extends Record> responseClass, String header) {
