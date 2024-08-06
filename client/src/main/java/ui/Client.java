@@ -158,7 +158,6 @@ public class Client {
             }
             String passNumber = Integer.toString(gameNumber + offset);
             String playerColor = params[1].toUpperCase();
-            System.out.println(passNumber);
             server.joinGame(authToken, passNumber, playerColor);
             printBoard(game, playerColor);
             return String.format("You have joined the game as %s", playerColor);
@@ -236,45 +235,29 @@ public class Client {
     public static ArrayList<String> makeRows(ChessBoard board, String bottomColor) {
         ArrayList<String> rowArray = new ArrayList<>();
         int rowNum = 1;
-        if (bottomColor.equals("WHITE")) {
-            rowNum = 8;
-        }
         boolean isLight = true;
-        String onSquare = "   ";
+        if (bottomColor.equals("WHITE")) {
+            isLight = false;
+        }
         for (ChessPosition[] row : board.getSpaces()) {
             StringBuilder builder = new StringBuilder();
             builder.append(SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK + " " + rowNum + " ");
-            for (ChessPosition square : row) {
-                ChessPiece piece = square.getPiece();
-                String pieceColorName = "";
-                if (piece != null) {
-                    ChessPiece.PieceType pieceName = piece.getPieceType();
-                    ChessGame.TeamColor pieceColor = piece.getTeamColor();
-                    switch(pieceName) {
-                        case KING -> onSquare = " K ";
-                        case QUEEN -> onSquare = " Q ";
-                        case BISHOP -> onSquare = " B ";
-                        case KNIGHT -> onSquare = " N ";
-                        case ROOK -> onSquare = " R ";
-                        case PAWN -> onSquare = " P ";
-                    }
-                    switch (pieceColor) {
-                        case WHITE -> pieceColorName = SET_TEXT_COLOR_WHITE;
-                        case BLACK -> pieceColorName = SET_TEXT_COLOR_RED;
-                    }
+            if (bottomColor.equals("BLACK")) {
+                ChessPosition[] reverseRow = new ChessPosition[row.length];
+                for (int i = 0; i <= 7; i++) {
+                    reverseRow[i] = row[7 - i];
                 }
-                else {
-                    onSquare = "   ";
-                }
-                if (isLight) {
-                    builder.append(SET_BG_COLOR_LIGHT_GREY + pieceColorName + onSquare);
-                    isLight = false;
-                }
-                else {
-                    builder.append(SET_BG_COLOR_DARK_GREY + pieceColorName + onSquare);
-                    isLight = true;
-                }
+                buildRow(reverseRow, builder, isLight);
             }
+            else {
+                buildRow(row, builder, isLight);
+            }
+            /*if (isLight) {
+                isLight = false;
+            }
+            else {
+                isLight = true;
+            }*/
             builder.append(SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK + " " + rowNum + " " + RESET_BG_COLOR + "\n");
             if (isLight) {
                 isLight = false;
@@ -282,15 +265,43 @@ public class Client {
             else {
                 isLight = true;
             }
-            if (bottomColor.equals("WHITE")) {
-                rowNum--;
-            }
-            else {
-                rowNum++;
-            }
+            rowNum++;
             String finishedRow = builder.toString();
             rowArray.add(finishedRow);
         }
         return rowArray;
+    }
+
+    public static void buildRow(ChessPosition[] row, StringBuilder builder, boolean isLight) {
+        String onSquare = "   ";
+        for (ChessPosition square : row) {
+            ChessPiece piece = square.getPiece();
+            String pieceColorName = "";
+            if (piece != null) {
+                ChessPiece.PieceType pieceName = piece.getPieceType();
+                ChessGame.TeamColor pieceColor = piece.getTeamColor();
+                switch (pieceName) {
+                    case KING -> onSquare = " K ";
+                    case QUEEN -> onSquare = " Q ";
+                    case BISHOP -> onSquare = " B ";
+                    case KNIGHT -> onSquare = " N ";
+                    case ROOK -> onSquare = " R ";
+                    case PAWN -> onSquare = " P ";
+                }
+                switch (pieceColor) {
+                    case WHITE -> pieceColorName = SET_TEXT_COLOR_WHITE;
+                    case BLACK -> pieceColorName = SET_TEXT_COLOR_RED;
+                }
+            } else {
+                onSquare = "   ";
+            }
+            if (isLight) {
+                builder.append(SET_BG_COLOR_LIGHT_GREY + pieceColorName + onSquare);
+                isLight = false;
+            } else {
+                builder.append(SET_BG_COLOR_DARK_GREY + pieceColorName + onSquare);
+                isLight = true;
+            }
+        }
     }
 }
