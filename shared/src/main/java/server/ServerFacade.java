@@ -66,8 +66,12 @@ public class ServerFacade {
 
     public void joinGame(String authToken, String gameID, String playerColor) {
         String path = "/game";
-        JoinRequest request = new JoinRequest(authToken, gameID, playerColor);
-        makeRequest("PUT", path, request, JoinResult.class, authToken);
+        JoinRequest request = new JoinRequest(authToken, playerColor, gameID);
+        System.out.println("AuthToken: " + authToken + "gameID: " + gameID + "playerColor: " + playerColor);
+        JoinResult result = (JoinResult)makeRequest("PUT", path, request, JoinResult.class, authToken);
+        if (result == null) {
+            System.out.println("Sorry, that color is already taken");
+        }
     }
 
     private Record makeRequest(String method, String path, Object request, Class<? extends Record> responseClass, String header) {
@@ -82,7 +86,6 @@ public class ServerFacade {
             http.connect();
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);
-
         } catch (Exception e) {
             return null;
         }

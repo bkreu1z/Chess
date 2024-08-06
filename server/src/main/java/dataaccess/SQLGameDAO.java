@@ -108,7 +108,6 @@ public class SQLGameDAO implements GameInterface {
         } catch (DataAccessException e) {
             return false;
         }
-        String color = null;
         var statement = "SELECT * FROM games WHERE id = \"" + gameID + "\"";
         if (playerColor.equals("WHITE")) {
             statement = "UPDATE games SET whiteUsername = ? WHERE id = ?";

@@ -5,7 +5,6 @@ import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
 import org.junit.jupiter.api.*;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;

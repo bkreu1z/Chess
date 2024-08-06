@@ -5,7 +5,6 @@ import dataaccess.SQLGameDAO;
 import dataaccess.SQLUserDAO;
 import model.GameData;
 import org.junit.jupiter.api.*;
-import requests.LogoutRequest;
 import server.Server;
 import server.ServerFacade;
 import service.ClearService;
@@ -179,7 +178,7 @@ public class ServerFacadeTests {
         String authToken = facade.register("goodJoin","passJoin", "email@byu.edu");
         facade.createGame(authToken, "Hyrum");
         String gameID = facade.listGames(authToken).getFirst().gameID();
-        facade.joinGame(authToken, "WHITE", gameID);
+        facade.joinGame(authToken, gameID, "WHITE");
         try {
             Assertions.assertFalse(gameDAO.checkColorNull("WHITE", gameID));
         } catch (Exception e) {
@@ -195,7 +194,7 @@ public class ServerFacadeTests {
         String authToken = facade.register("badJoin","passJoin", "email@byu.edu");
         facade.createGame(authToken, "Abraham");
         String gameID = facade.listGames(authToken).getFirst().gameID();
-        facade.joinGame(authToken, "WHITE", "badID");
+        facade.joinGame(authToken, "badID", "WHITE");
         try {
             Assertions.assertTrue(gameDAO.checkColorNull("WHITE", gameID));
         } catch (Exception e) {

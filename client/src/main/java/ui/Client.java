@@ -9,8 +9,6 @@ import server.ServerFacade;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Set;
-import java.util.stream.Stream;
 
 import static ui.EscapeSequences.*;
 import static ui.EscapeSequences.RESET_BG_COLOR;
@@ -58,7 +56,9 @@ public class Client {
             String password = params[1];
             authToken = server.login(passUsername, password);
             if (authToken == null) {
-                return "Sorry, the username and password entered didn't match our database. Please make sure you're typing the password correctly";
+                return "Sorry, the username and password entered didn't match our database. " +
+                        "Please make sure you're typing the password correctly, and that if this is your first time" +
+                        "you use register instead of login";
             }
             return String.format("You are logged in as %s", username);
         }
@@ -109,6 +109,9 @@ public class Client {
         }
         StringBuilder builder = new StringBuilder();
         ArrayList<GameData> games = server.listGames(authToken);
+        if (games.isEmpty()) {
+            return "No games found";
+        }
         boolean first = true;
         int offset = 1;
         for (GameData gameData : games) {
@@ -142,6 +145,7 @@ public class Client {
             int gameNumber = Integer.parseInt(params[0]);
             String passNumber = Integer.toString(gameNumber + offset);
             String playerColor = params[1].toUpperCase();
+            System.out.println(passNumber);
             server.joinGame(authToken, passNumber, playerColor);
             return String.format("You have joined the game as %s", playerColor);
         }
