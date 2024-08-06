@@ -67,7 +67,6 @@ public class ServerFacade {
     public void joinGame(String authToken, String gameID, String playerColor) {
         String path = "/game";
         JoinRequest request = new JoinRequest(authToken, playerColor, gameID);
-        System.out.println("AuthToken: " + authToken + "gameID: " + gameID + "playerColor: " + playerColor);
         JoinResult result = (JoinResult)makeRequest("PUT", path, request, JoinResult.class, authToken);
         if (result == null) {
             System.out.println("Sorry, that color is already taken");

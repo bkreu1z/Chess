@@ -35,9 +35,9 @@ public class Client {
             return switch(cmd) {
                 case "login" -> signIn(params);
                 case "register" -> register(params);
-                case "logout" -> logout();
+                case "logout" -> logout(params);
                 case "create" -> createGame(params);
-                case "list" -> listGames();
+                case "list" -> listGames(params);
                 case "play" -> playGame(params);
                 case "observe" -> observeGame(params);
                 case "quit" -> "quit";
@@ -49,16 +49,17 @@ public class Client {
     }
 
     public String signIn(String[] params) {
-        if (params.length >= 2) {
+        if (params.length == 2) {
             signedIn = true;
             username = params[0];
             String passUsername = params[0];
             String password = params[1];
             authToken = server.login(passUsername, password);
             if (authToken == null) {
-                return "Sorry, the username and password entered didn't match our database. " +
-                        "Please make sure you're typing the password correctly, and that if this is your first time" +
-                        "you use register instead of login";
+                return """
+                        Sorry, the username and password entered didn't match our database.
+                        Please make sure you're typing the password correctly, and that if this is your first time
+                        you use register instead of login""";
             }
             return String.format("You are logged in as %s", username);
         }
@@ -66,7 +67,7 @@ public class Client {
     }
 
     public String register(String[] params) {
-        if (params.length >= 3) {
+        if (params.length == 3) {
             signedIn = true;
             username = params[0];
             String passUsername = params[0];
@@ -81,7 +82,10 @@ public class Client {
         return "Expected: <yourUserName> <yourPassword> <yourEmail>";
     }
 
-    public String logout() {
+    public String logout(String[] params) {
+        if (params.length > 0) {
+            return "Too many arguments";
+        }
         if (signedIn) {
             signedIn = false;
             server.logout(authToken);
@@ -95,7 +99,7 @@ public class Client {
         if (!signedIn) {
             return "You are not logged in";
         }
-        if (params.length >= 1) {
+        if (params.length == 1) {
             String gameName = params[0];
             server.createGame(authToken, gameName);
             return String.format("game %s created",gameName);
@@ -103,7 +107,10 @@ public class Client {
         return "Expected: <gameName>";
     }
 
-    public String listGames() {
+    public String listGames(String[] params) {
+        if (params.length > 0) {
+            return "Too many arguments";
+        }
         if (!signedIn) {
             return "You are not logged in";
         }
@@ -139,20 +146,35 @@ public class Client {
         if (!signedIn) {
             return "You are not logged in";
         }
-        if (params.length >= 2) {
+        if (params.length == 2) {
+            ChessGame game = new ChessGame();
             ArrayList<GameData> games = server.listGames(authToken);
             int offset = Integer.parseInt(games.getFirst().gameID()) - 1;
-            int gameNumber = Integer.parseInt(params[0]);
+            int gameNumber = 1;
+            try {
+                gameNumber = Integer.parseInt(params[0]);
+            } catch (NumberFormatException e) {
+                return "Sorry, you entered a word in for the gameNumber";
+            }
             String passNumber = Integer.toString(gameNumber + offset);
             String playerColor = params[1].toUpperCase();
             System.out.println(passNumber);
             server.joinGame(authToken, passNumber, playerColor);
+            printBoard(game, playerColor);
             return String.format("You have joined the game as %s", playerColor);
         }
         return "Expected: <gameNumber> <playerColor>";
     }
 
     public String observeGame(String[] params) {
+        if (params.length != 1) {
+            return "incorrect number of arguments";
+        }
+        try {
+            int gameID = Integer.parseInt(params[0]);
+        } catch (NumberFormatException e) {
+            return "Sorry, you entered a word for the gameID and not a number";
+        }
         ChessGame game = new ChessGame();
         printBoard(game, "BLACK");
         System.out.println();
