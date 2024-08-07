@@ -16,10 +16,13 @@ public class UserGameCommand {
 
     private final Integer gameID;
 
-    public UserGameCommand(CommandType commandType, String authToken, Integer gameID) {
+    private final String userName;
+
+    public UserGameCommand(CommandType commandType, String authToken, Integer gameID, String userName) {
         this.commandType = commandType;
         this.authToken = authToken;
         this.gameID = gameID;
+        this.userName = userName;
     }
 
     public enum CommandType {
@@ -33,13 +36,15 @@ public class UserGameCommand {
         return commandType;
     }
 
-    public String getAuthToken() {
+    public String getAuthString() {
         return authToken;
     }
 
     public Integer getGameID() {
         return gameID;
     }
+
+    public String getUserName() {return userName;}
 
     @Override
     public boolean equals(Object o) {

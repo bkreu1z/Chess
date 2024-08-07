@@ -36,5 +36,6 @@ public class Repl implements NotificationHandler {
     @Override
     public void notify(ServerMessage serverMessage) {
         System.out.println(serverMessage);
+        System.out.print(">>>");
     }
 }
