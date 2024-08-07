@@ -6,6 +6,8 @@ import chess.ChessPiece;
 import chess.ChessPosition;
 import model.GameData;
 import server.ServerFacade;
+import ui.websocket.NotificationHandler;
+import ui.websocket.WebSocketFacade;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,16 +17,17 @@ import static ui.EscapeSequences.RESET_BG_COLOR;
 
 public class Client {
     private final ServerFacade server;
-    private final Repl repl;
     private final String serverUrl;
+    private final NotificationHandler notificationHandler;
     private boolean signedIn = false;
     private String username;
     private String authToken;
+    private WebSocketFacade ws;
 
-    public Client(String serverUrl, Repl repl) {
+    public Client(String serverUrl, NotificationHandler notificationHandler) {
         server = new ServerFacade(serverUrl);
-        this.repl = repl;
         this.serverUrl = serverUrl;
+        this.notificationHandler = notificationHandler;
     }
 
     public String eval(String input) {
@@ -159,7 +162,8 @@ public class Client {
             String passNumber = Integer.toString(gameNumber + offset);
             String playerColor = params[1].toUpperCase();
             server.joinGame(authToken, passNumber, playerColor);
-            printBoard(game, playerColor);
+            ws = new WebSocketFacade(serverUrl, notificationHandler);
+            ws.playGame();
             return String.format("You have joined the game as %s", playerColor);
         }
         return "Expected: <gameNumber> <playerColor>";
@@ -252,12 +256,6 @@ public class Client {
             else {
                 buildRow(row, builder, isLight);
             }
-            /*if (isLight) {
-                isLight = false;
-            }
-            else {
-                isLight = true;
-            }*/
             builder.append(SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK + " " + rowNum + " " + RESET_BG_COLOR + "\n");
             if (isLight) {
                 isLight = false;

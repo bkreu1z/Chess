@@ -1,8 +1,11 @@
 package ui;
 
+import ui.websocket.NotificationHandler;
+import websocket.messages.ServerMessage;
+
 import java.util.Scanner;
 
-public class Repl {
+public class Repl implements NotificationHandler {
     private final Client client;
 
     public Repl(String serverUrl) {
@@ -28,5 +31,10 @@ public class Repl {
                 System.out.println(e);
             }
         }
+    }
+
+    @Override
+    public void notify(ServerMessage serverMessage) {
+        System.out.println(serverMessage);
     }
 }
