@@ -3,23 +3,36 @@ package server;
 import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
 import handlers.*;
+import server.websocket.WebSocketHandler;
 import spark.*;
 
 import java.sql.SQLException;
 
 public class Server {
+    private final WebSocketHandler webSocketHandler;
+    private final ClearHandler clearHandler;
+    private final CreateGameHandler createGameHandler;
+    private final JoinGameHandler joinGameHandler;
+    private final ListGamesHandler listGamesHandler;
+    private final LoginHandler loginHandler;
+    private final LogoutHandler logoutHandler;
+    private final RegisterHandler registerHandler;
+
+    public Server() {
+        webSocketHandler = new WebSocketHandler();
+        clearHandler = new ClearHandler();
+        createGameHandler = new CreateGameHandler();
+        joinGameHandler = new JoinGameHandler();
+        listGamesHandler = new ListGamesHandler();
+        loginHandler = new LoginHandler();
+        logoutHandler = new LogoutHandler();
+        registerHandler = new RegisterHandler();
+    }
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
-        ClearHandler clearHandler = new ClearHandler();
-        CreateGameHandler createGameHandler = new CreateGameHandler();
-        JoinGameHandler joinGameHandler = new JoinGameHandler();
-        ListGamesHandler listGamesHandler = new ListGamesHandler();
-        LoginHandler loginHandler = new LoginHandler();
-        LogoutHandler logoutHandler = new LogoutHandler();
-        RegisterHandler registerHandler = new RegisterHandler();
 
         try {
             configureDatabase();
@@ -28,19 +41,47 @@ public class Server {
         }
 
         // Register your endpoints and handle exceptions here.
-        Spark.post("/user", registerHandler::handle);
-        Spark.post("/session", loginHandler::handle);
-        Spark.post("/game", createGameHandler::handle);
-        Spark.get("/game", listGamesHandler::handle);
-        Spark.put("/game", joinGameHandler::handle);
-        Spark.delete("/session", logoutHandler::handle);
-        Spark.delete("/db", clearHandler::handle);
+        Spark.post("/user", this::register);
+        Spark.post("/session", this::login);
+        Spark.post("/game", this::createGame);
+        Spark.get("/game", this::listGames);
+        Spark.put("/game", this::joinGame);
+        Spark.delete("/session", this::logout);
+        Spark.delete("/db", this::clear);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
 
         Spark.awaitInitialization();
         return Spark.port();
+    }
+
+    private Object register(Request req, Response res) throws Exception {
+        return registerHandler.handle(req, res);
+    }
+
+    private Object login(Request req, Response res) throws Exception {
+        return loginHandler.handle(req, res);
+    }
+
+    private Object createGame(Request req, Response res) throws Exception {
+        return createGameHandler.handle(req, res);
+    }
+
+    private Object listGames(Request req, Response res) throws Exception {
+        return listGamesHandler.handle(req, res);
+    }
+
+    private Object joinGame(Request req, Response res) throws Exception {
+        return joinGameHandler.handle(req, res);
+    }
+
+    private Object logout(Request req, Response res) throws Exception {
+        return logoutHandler.handle(req, res);
+    }
+
+    private Object clear(Request req, Response res) throws Exception {
+        return clearHandler.handle(req, res);
     }
 
     private final String[] createStatements = {

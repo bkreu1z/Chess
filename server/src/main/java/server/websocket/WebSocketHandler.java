@@ -27,7 +27,7 @@ public class WebSocketHandler {
     private void connect(String userName, Session session) throws IOException {
         connections.add(userName, session);
         var message = String.format("%s has joined the game", userName);
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
         connections.broadcast(userName, notification);
     }
 
@@ -36,7 +36,7 @@ public class WebSocketHandler {
     private void leave(String userName) throws IOException {
         connections.remove(userName);
         var message = String.format("%s has left the game", userName);
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
         connections.broadcast(userName, notification);
     }
 

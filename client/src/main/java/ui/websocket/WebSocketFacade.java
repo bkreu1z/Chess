@@ -1,6 +1,7 @@
 package ui.websocket;
 
 import com.google.gson.Gson;
+import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 
 import javax.websocket.*;
@@ -8,7 +9,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public class WebSocketFacade {
+public class WebSocketFacade extends Endpoint {
     Session session;
     NotificationHandler notificationHandler;
 
@@ -33,5 +34,19 @@ public class WebSocketFacade {
         }
     }
 
+    @Override
+    public void onOpen(Session session, EndpointConfig endpointConfig) {}
+
     public void playGame() {}
+
+    public void leaveGame(String authToken, Integer gameID, String userName) {
+        try {
+            var action = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID, userName);
+            this.session.getBasicRemote().sendText(new Gson().toJson(action));
+            this.session.close();
+        } catch (IOException e) {
+            System.out.println("problem in WebSocketFacade");
+            System.out.println(e.getMessage());
+        }
+    }
 }
