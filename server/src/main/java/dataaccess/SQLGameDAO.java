@@ -139,6 +139,40 @@ public class SQLGameDAO implements GameInterface {
         return true;
     }
 
+    public void leaveGame(String gameID, String playerColor) throws DataAccessException {
+        var statement = "SELECT * FROM games WHERE id = \"" + gameID + "\"";
+        if (playerColor.equals("WHITE")) {
+            statement = "UPDATE games SET whiteUsername = ? WHERE id = ?";
+        } else {
+            statement = "UPDATE games SET blackUsername = ? WHERE id = ?";
+        }
+        SQLAuthDAO.executeUpdate(statement, null, gameID);
+    }
+
+    public String getPlayerColor(String gameID, String userName) throws DataAccessException {
+        var statement = "SELECT * FROM games WHERE id = \"" + gameID + "\"";
+        String whiteUsername = null;
+        String blackUsername = null;
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement(statement)) {
+                try (var rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        whiteUsername = rs.getString("WhiteUsername");
+                        blackUsername = rs.getString("BlackUsername");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException("could not get player color");
+        }
+        if (userName.equals(whiteUsername)) {
+            return "WHITE";
+        } else if (userName.equals(blackUsername)) {
+            return "BLACK";
+        }
+        return null;
+    }
+
     @Override
     public boolean deleteGame(String gameName) {
         var statement = "DELETE FROM games WHERE gameName = ?";

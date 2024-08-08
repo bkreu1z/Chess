@@ -27,7 +27,7 @@ public class WebSocketHandler {
         switch (action.getCommandType()) {
             case CONNECT -> connect(action.getAuthString(), session, action.getGameID());
             case MAKE_MOVE -> makeMove();
-            case LEAVE -> leave(action.getAuthString());
+            case LEAVE -> leave(action.getAuthString(), action.getGameID());
             case RESIGN -> resign();
         }
     }
@@ -53,11 +53,16 @@ public class WebSocketHandler {
 
     private void makeMove() {}
 
-    private void leave(String authToken) throws IOException {
-        connections.remove(authToken);
-        var message = String.format("%s has left the game", authToken);
+    private void leave(String authToken, Integer gameID) throws IOException, DataAccessException {
+        String username = authDAO.getUsername(authToken);
+        String playerColor = gameDAO.getPlayerColor(Integer.toString(gameID), username);
+        if (playerColor != null) {
+            gameDAO.leaveGame(Integer.toString(gameID), playerColor);
+        }
+        connections.remove(username);
+        var message = String.format("%s has left the game", username);
         var notification = new NotificationMessage(message);
-        connections.broadcast(authToken, notification);
+        connections.broadcast(username, notification);
     }
 
     private void resign() {}
