@@ -18,10 +18,10 @@ public class ServerMessage {
         NOTIFICATION
     }
 
-    public ServerMessage(ServerMessageType type, String message) {
+    /*public ServerMessage(ServerMessageType type, String message) {
         this.message = message;
         this.serverMessageType = type;
-    }
+    }*/
 
     public ServerMessageType getServerMessageType() {
         return this.serverMessageType;

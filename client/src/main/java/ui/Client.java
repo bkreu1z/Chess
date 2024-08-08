@@ -23,6 +23,7 @@ public class Client {
     private String username;
     private String authToken;
     private WebSocketFacade ws;
+    private boolean gamePlay = false;
 
     public Client(String serverUrl, NotificationHandler notificationHandler) {
         server = new ServerFacade(serverUrl);
@@ -43,7 +44,12 @@ public class Client {
                 case "list" -> listGames(params);
                 case "play" -> playGame(params);
                 case "observe" -> observeGame(params);
-                case "quit" -> "quit";
+                case "redraw" -> redraw(params);
+                case "leave" -> leaveGame(params);
+                case "makeMove" -> makeMove(params);
+                case "resign" -> resign(params);
+                case "highlight" -> highlight(params);
+                case "quit" -> quit(params);
                 default -> help();
             };
         } catch (Exception e) {
@@ -163,7 +169,8 @@ public class Client {
             String playerColor = params[1].toUpperCase();
             server.joinGame(authToken, passNumber, playerColor);
             ws = new WebSocketFacade(serverUrl, notificationHandler);
-            ws.playGame();
+            ws.joinGame(authToken, gameNumber, username);
+            gamePlay = true;
             return String.format("You have joined the game as %s", playerColor);
         }
         return "Expected: <gameNumber> <playerColor>";
@@ -185,6 +192,38 @@ public class Client {
         return "";
     }
 
+    public String redraw(String[] params) {
+        return "not written yet";
+    }
+
+    public String leaveGame(String[] params) {
+        return "not written yet";
+    }
+
+    public String makeMove(String[] params) {
+        return "not written yet";
+    }
+
+    public String resign(String[] params) {
+        gamePlay = false;
+        return "not written yet";
+    }
+
+    public String highlight(String[] params) {
+        return "not written yet";
+    }
+
+    public String quit(String[] params) {
+        if (params.length != 0) {
+            return "the quit command doesn't take any arguments";
+        }
+        if (gamePlay) {
+            gamePlay = false;
+            resign(params);
+        }
+        return "quit";
+    }
+
     public String help() {
         if (!signedIn) {
             return """
@@ -193,6 +232,18 @@ public class Client {
                     quit
                     login <username> <password>
                     register <username> <password> <email>
+                    help
+                    """;
+        } if (gamePlay) {
+            return """
+                    You are currently playing a chess game. You can redraw the chess board, leave, make a move,
+                    resign, highlight the legal moves of a given piece, or ask for help using
+                    one of the following commands
+                    redraw
+                    leave
+                    makeMove
+                    resign
+                    highlight
                     help
                     """;
         }

@@ -78,6 +78,22 @@ public class SQLGameDAO implements GameInterface {
         return games;
     }
 
+    public ChessGame getGameByID(String gameID) throws DataAccessException {
+        String statement = "SELECT * FROM games WHERE id = \"" + gameID + "\"";
+        ChessGame game = null;
+        try (Connection conn = DatabaseManager.getConnection()) {try (var ps = conn.prepareStatement(statement)) {
+            try (var rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    game = gson.fromJson(rs.getString("game"), ChessGame.class);
+                }
+            }
+        }
+        } catch (Exception e) {
+            throw new DataAccessException("Could not get game");
+        }
+        return game;
+    }
+
     public boolean checkColorNull(String playerColor, String gameID) throws DataAccessException {
         var statement = "SELECT * FROM games WHERE id = \"" + gameID + "\"";
         String color = null;
