@@ -39,7 +39,7 @@ public class WebSocketFacade extends Endpoint {
 
     public void joinGame(String authToken, Integer gameID, String userName) {
         try {
-            var action = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID, userName);
+            var action = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
             this.session.getBasicRemote().sendText(new Gson().toJson(action));
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -48,7 +48,7 @@ public class WebSocketFacade extends Endpoint {
 
     public void leaveGame(String authToken, Integer gameID, String userName) {
         try {
-            var action = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID, userName);
+            var action = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
             this.session.getBasicRemote().sendText(new Gson().toJson(action));
             this.session.close();
         } catch (IOException e) {

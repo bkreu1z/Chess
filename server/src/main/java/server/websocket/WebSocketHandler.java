@@ -8,6 +8,7 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
@@ -33,13 +34,21 @@ public class WebSocketHandler {
 
     private void connect(String authString, Session session, Integer gameID) throws IOException, DataAccessException {
         String username = authDAO.getUsername(authString);
-        connections.add(username, session);
-        var message = String.format("%s has joined the game", username);
-        var notification = new NotificationMessage(message);
-        connections.broadcast(username, notification);
-        var game = gameDAO.getGameByID(Integer.toString(gameID));
-        var soloNotification = new LoadGameMessage(game);
-        connections.singleUserBroadcast(username, soloNotification);
+        if (!username.equals("")) {
+            connections.add(username, session);
+            var game = gameDAO.getGameByID(Integer.toString(gameID));
+            if (game != null) {
+                var message = String.format("%s has joined the game", username);
+                var notification = new NotificationMessage(message);
+                connections.broadcast(username, notification);
+                var soloNotification = new LoadGameMessage(game);
+                connections.singleUserBroadcast(username, soloNotification);
+            } else {
+                connections.singleUserBroadcast(username, new ErrorMessage("invalid game ID"));
+            }
+        } else {
+            session.getRemote().sendString(new Gson().toJson(new ErrorMessage("invalid authentication. You may not be logged in")));
+        }
     }
 
     private void makeMove() {}
