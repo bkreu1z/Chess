@@ -38,12 +38,12 @@ public class WebSocketHandler {
     private void connect(String authString, Session session, Integer gameID) throws IOException, DataAccessException {
         String username = authDAO.getUsername(authString);
         if (!username.equals("")) {
-            connections.add(username, session);
+            connections.add(username, session, gameID);
             var game = gameDAO.getGameByID(Integer.toString(gameID));
             if (game != null) {
                 var message = String.format("%s has joined the game", username);
                 var notification = new NotificationMessage(message);
-                connections.broadcast(username, notification);
+                connections.broadcast(username, notification, gameID);
                 var soloNotification = new LoadGameMessage(game);
                 connections.singleUserBroadcast(username, soloNotification);
             } else {
@@ -66,8 +66,8 @@ public class WebSocketHandler {
                     String message = String.format("%s moved from %s to %s", username, startPosition, endPosition);
                     var boardNotification = new LoadGameMessage(game);
                     var textNotification = new NotificationMessage(message);
-                    connections.broadcast(username, boardNotification);
-                    connections.broadcast(username, textNotification);
+                    connections.broadcast(username, boardNotification, gameID);
+                    connections.broadcast(username, textNotification, gameID);
                     connections.singleUserBroadcast(username, boardNotification);
 
                     boolean checkmate = false;
@@ -82,7 +82,7 @@ public class WebSocketHandler {
                         String winnerMessage = "Congratulations, you have won the game!";
                         var winNotification = new NotificationMessage(winMessage);
                         var winnerNotification = new NotificationMessage(winnerMessage);
-                        connections.broadcast(username, winNotification);
+                        connections.broadcast(username, winNotification, gameID);
                         connections.singleUserBroadcast(username, winnerNotification);
                     }
                 } else {
@@ -108,7 +108,7 @@ public class WebSocketHandler {
         connections.remove(username);
         var message = String.format("%s has left the game", username);
         var notification = new NotificationMessage(message);
-        connections.broadcast(username, notification);
+        connections.broadcast(username, notification, gameID);
     }
 
     private void resign(String authToken, Integer gameID, Session session) throws IOException, DataAccessException {
@@ -128,7 +128,7 @@ public class WebSocketHandler {
                 gameDAO.leaveGame(Integer.toString(gameID), playerColor);
                 var message = String.format("%s has resigned", username);
                 var notification = new NotificationMessage(message);
-                connections.broadcast(username, notification);
+                connections.broadcast(username, notification, gameID);
             } else {
                 connections.singleUserBroadcast(username, new ErrorMessage("The other player is not there, so you can't" +
                         "resign. If you would like to leave please use the leave command"));
