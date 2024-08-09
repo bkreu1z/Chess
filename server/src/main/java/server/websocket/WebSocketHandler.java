@@ -2,8 +2,6 @@ package server.websocket;
 
 import chess.ChessGame;
 import chess.ChessMove;
-import chess.ChessPiece;
-import chess.ChessPosition;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.SQLAuthDAO;
@@ -31,7 +29,7 @@ public class WebSocketHandler {
         MakeMoveCommand makeMove = new Gson().fromJson(message, MakeMoveCommand.class);
         switch (action.getCommandType()) {
             case CONNECT -> connect(action.getAuthString(), session, action.getGameID());
-            case MAKE_MOVE -> makeMove(makeMove.getAuthString(), makeMove.getGameID(), makeMove.getMove());
+            case MAKE_MOVE -> makeMove(makeMove.getAuthString(), makeMove.getGameID(), makeMove.getMove(), session);
             case LEAVE -> leave(action.getAuthString(), action.getGameID());
             case RESIGN -> resign();
         }
@@ -57,17 +55,44 @@ public class WebSocketHandler {
         }
     }
 
-    private void makeMove(String authString, Integer gameID, ChessMove move) throws IOException, DataAccessException {
-        ChessGame game = gameDAO.makeMove(Integer.toString(gameID), move);
+    private void makeMove(String authString, Integer gameID, ChessMove move, Session session) throws IOException, DataAccessException {
         String username = authDAO.getUsername(authString);
-        String startPosition = move.getStartPosition().toString();
-        String endPosition = move.getEndPosition().toString();
-        String message = String.format("%s moved from %s to %s", username, startPosition, endPosition);
-        var boardNotification = new LoadGameMessage(game);
-        var textNotification = new NotificationMessage(message);
-        connections.broadcast(username, boardNotification);
-        connections.broadcast(username, textNotification);
-        connections.singleUserBroadcast(username, boardNotification);
+        if (!username.equals("")) {
+            ChessGame game = gameDAO.makeMove(Integer.toString(gameID), move, username);
+            if (game != null) {
+                String startPosition = move.getStartPosition().toString();
+                String endPosition = move.getEndPosition().toString();
+                String message = String.format("%s moved from %s to %s", username, startPosition, endPosition);
+                var boardNotification = new LoadGameMessage(game);
+                var textNotification = new NotificationMessage(message);
+                connections.broadcast(username, boardNotification);
+                connections.broadcast(username, textNotification);
+                connections.singleUserBroadcast(username, boardNotification);
+
+                boolean checkmate = false;
+                if (gameDAO.getPlayerColor(Integer.toString(gameID), username).equals("WHITE")) {
+                    checkmate = game.isInCheckmate(ChessGame.TeamColor.BLACK);
+                }
+                else if (gameDAO.getPlayerColor(Integer.toString(gameID), username).equals("BLACK")) {
+                    checkmate = game.isInCheckmate(ChessGame.TeamColor.WHITE);
+                }
+                if (checkmate) {
+                    String winMessage = String.format("%s has won the game", username);
+                    String winnerMessage = "Congratulations, you have won the game!";
+                    var winNotification = new NotificationMessage(winMessage);
+                    var winnerNotification = new NotificationMessage(winnerMessage);
+                    connections.broadcast(username, winNotification);
+                    connections.singleUserBroadcast(username, winnerNotification);
+                }
+            } else {
+                connections.singleUserBroadcast(username, new ErrorMessage("Invalid move. This could mean it's not " +
+                        "your turn, or that the move would put you in check"));
+            }
+        } else {
+            session.getRemote().sendString(new Gson().toJson(
+                    new ErrorMessage("invalid authentication. You may not be logged in")));
+        }
+
     }
 
     private void leave(String authToken, Integer gameID) throws IOException, DataAccessException {

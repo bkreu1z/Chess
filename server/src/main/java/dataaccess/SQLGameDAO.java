@@ -175,8 +175,18 @@ public class SQLGameDAO implements GameInterface {
         return null;
     }
 
-    public ChessGame makeMove(String gameID, ChessMove move) throws DataAccessException {
+    public ChessGame makeMove(String gameID, ChessMove move, String username) throws DataAccessException {
         ChessGame game = getGameByID(gameID);
+        String playerColor = getPlayerColor(gameID, username);
+        if (playerColor == null) {
+            return null;
+        }
+        if (game.getTeamTurn().equals(ChessGame.TeamColor.WHITE) && playerColor.equals("BLACK")) {
+            return null;
+        }
+        if (game.getTeamTurn().equals(ChessGame.TeamColor.BLACK) && playerColor.equals("WHITE")) {
+            return null;
+        }
         try {
             game.makeMove(move);
         } catch (InvalidMoveException e) {
