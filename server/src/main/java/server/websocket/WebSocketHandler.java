@@ -31,7 +31,7 @@ public class WebSocketHandler {
             case CONNECT -> connect(action.getAuthString(), session, action.getGameID());
             case MAKE_MOVE -> makeMove(makeMove.getAuthString(), makeMove.getGameID(), makeMove.getMove(), session);
             case LEAVE -> leave(action.getAuthString(), action.getGameID());
-            case RESIGN -> resign();
+            case RESIGN -> resign(action.getAuthString(), action.getGameID(), session);
         }
     }
 
@@ -58,35 +58,39 @@ public class WebSocketHandler {
     private void makeMove(String authString, Integer gameID, ChessMove move, Session session) throws IOException, DataAccessException {
         String username = authDAO.getUsername(authString);
         if (!username.equals("")) {
-            ChessGame game = gameDAO.makeMove(Integer.toString(gameID), move, username);
-            if (game != null) {
-                String startPosition = move.getStartPosition().toString();
-                String endPosition = move.getEndPosition().toString();
-                String message = String.format("%s moved from %s to %s", username, startPosition, endPosition);
-                var boardNotification = new LoadGameMessage(game);
-                var textNotification = new NotificationMessage(message);
-                connections.broadcast(username, boardNotification);
-                connections.broadcast(username, textNotification);
-                connections.singleUserBroadcast(username, boardNotification);
+            if (!gameDAO.checkColorNull("WHITE", Integer.toString(gameID)) && !gameDAO.checkColorNull("BLACK", Integer.toString(gameID))) {
+                ChessGame game = gameDAO.makeMove(Integer.toString(gameID), move, username);
+                if (game != null) {
+                    String startPosition = move.getStartPosition().toString();
+                    String endPosition = move.getEndPosition().toString();
+                    String message = String.format("%s moved from %s to %s", username, startPosition, endPosition);
+                    var boardNotification = new LoadGameMessage(game);
+                    var textNotification = new NotificationMessage(message);
+                    connections.broadcast(username, boardNotification);
+                    connections.broadcast(username, textNotification);
+                    connections.singleUserBroadcast(username, boardNotification);
 
-                boolean checkmate = false;
-                if (gameDAO.getPlayerColor(Integer.toString(gameID), username).equals("WHITE")) {
-                    checkmate = game.isInCheckmate(ChessGame.TeamColor.BLACK);
-                }
-                else if (gameDAO.getPlayerColor(Integer.toString(gameID), username).equals("BLACK")) {
-                    checkmate = game.isInCheckmate(ChessGame.TeamColor.WHITE);
-                }
-                if (checkmate) {
-                    String winMessage = String.format("%s has won the game", username);
-                    String winnerMessage = "Congratulations, you have won the game!";
-                    var winNotification = new NotificationMessage(winMessage);
-                    var winnerNotification = new NotificationMessage(winnerMessage);
-                    connections.broadcast(username, winNotification);
-                    connections.singleUserBroadcast(username, winnerNotification);
+                    boolean checkmate = false;
+                    if (gameDAO.getPlayerColor(Integer.toString(gameID), username).equals("WHITE")) {
+                        checkmate = game.isInCheckmate(ChessGame.TeamColor.BLACK);
+                    }
+                    else if (gameDAO.getPlayerColor(Integer.toString(gameID), username).equals("BLACK")) {
+                        checkmate = game.isInCheckmate(ChessGame.TeamColor.WHITE);
+                    }
+                    if (checkmate) {
+                        String winMessage = String.format("%s has won the game", username);
+                        String winnerMessage = "Congratulations, you have won the game!";
+                        var winNotification = new NotificationMessage(winMessage);
+                        var winnerNotification = new NotificationMessage(winnerMessage);
+                        connections.broadcast(username, winNotification);
+                        connections.singleUserBroadcast(username, winnerNotification);
+                    }
+                } else {
+                    connections.singleUserBroadcast(username, new ErrorMessage("Invalid move. This could mean it's not " +
+                            "your turn, or that the move would put you in check"));
                 }
             } else {
-                connections.singleUserBroadcast(username, new ErrorMessage("Invalid move. This could mean it's not " +
-                        "your turn, or that the move would put you in check"));
+                connections.singleUserBroadcast(username, new ErrorMessage("Not enough players to make move"));
             }
         } else {
             session.getRemote().sendString(new Gson().toJson(
@@ -107,5 +111,32 @@ public class WebSocketHandler {
         connections.broadcast(username, notification);
     }
 
-    private void resign() {}
+    private void resign(String authToken, Integer gameID, Session session) throws IOException, DataAccessException {
+        String username = authDAO.getUsername(authToken);
+        String playerColor = gameDAO.getPlayerColor(Integer.toString(gameID), username);
+        if (playerColor != null) {
+            String otherPlayerColor = null;
+            if (playerColor.equals("WHITE")) {
+                otherPlayerColor = "BLACK";
+            } else if (playerColor.equals("BLACK")) {
+                otherPlayerColor = "WHITE";
+            }
+            if (!gameDAO.checkColorNull(otherPlayerColor, Integer.toString(gameID))) {
+                var userNotification = new NotificationMessage("you have resigned the game");
+                connections.singleUserBroadcast(username, userNotification);
+                connections.remove(username);
+                gameDAO.leaveGame(Integer.toString(gameID), playerColor);
+                var message = String.format("%s has resigned", username);
+                var notification = new NotificationMessage(message);
+                connections.broadcast(username, notification);
+            } else {
+                connections.singleUserBroadcast(username, new ErrorMessage("The other player is not there, so you can't" +
+                        "resign. If you would like to leave please use the leave command"));
+            }
+        } else {
+            session.getRemote().sendString(new Gson().toJson(
+                    new ErrorMessage("You are observing this game and cannot resign. If you would like to leave use" +
+                            "the leave command")));
+        }
+    }
 }
