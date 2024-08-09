@@ -1,6 +1,8 @@
 package dataaccess;
 
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.InvalidMoveException;
 import model.GameData;
 import com.google.gson.Gson;
 
@@ -171,6 +173,18 @@ public class SQLGameDAO implements GameInterface {
             return "BLACK";
         }
         return null;
+    }
+
+    public ChessGame makeMove(String gameID, ChessMove move) throws DataAccessException {
+        ChessGame game = getGameByID(gameID);
+        try {
+            game.makeMove(move);
+        } catch (InvalidMoveException e) {
+            return null;
+        }
+        String statement = "UPDATE games SET game = ? WHERE id = ?";
+        SQLAuthDAO.executeUpdate(statement, gson.toJson(game), gameID);
+        return game;
     }
 
     @Override
