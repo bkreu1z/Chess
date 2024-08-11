@@ -1,9 +1,6 @@
 package ui;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
 import model.GameData;
 import server.ServerFacade;
 import ui.websocket.NotificationHandler;
@@ -24,11 +21,14 @@ public class Client {
     private String authToken;
     private WebSocketFacade ws;
     private boolean gamePlay = false;
+    private Integer gameID = null;
+    private String playerColor = "WHITE";
 
     public Client(String serverUrl, NotificationHandler notificationHandler) {
         server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
         this.notificationHandler = notificationHandler;
+        ws = new WebSocketFacade(serverUrl, notificationHandler);
     }
 
     public String eval(String input) {
@@ -156,7 +156,6 @@ public class Client {
             return "You are not logged in";
         }
         if (params.length == 2) {
-            ChessGame game = new ChessGame();
             ArrayList<GameData> games = server.listGames(authToken);
             int offset = Integer.parseInt(games.getFirst().gameID()) - 1;
             int gameNumber = 1;
@@ -166,10 +165,10 @@ public class Client {
                 return "Sorry, you entered a word in for the gameNumber";
             }
             String passNumber = Integer.toString(gameNumber + offset);
-            String playerColor = params[1].toUpperCase();
+            playerColor = params[1].toUpperCase();
+            gameID = gameNumber + offset;
             server.joinGame(authToken, passNumber, playerColor);
-            ws = new WebSocketFacade(serverUrl, notificationHandler);
-            ws.joinGame(authToken, gameNumber, username);
+            ws.joinGame(authToken, gameID);
             gamePlay = true;
             return String.format("You have joined the game as %s", playerColor);
         }
@@ -177,39 +176,116 @@ public class Client {
     }
 
     public String observeGame(String[] params) {
+        if (!signedIn) {
+            return "You are not logged in";
+        }
         if (params.length != 1) {
             return "incorrect number of arguments";
         }
+        ArrayList<GameData> games = server.listGames(authToken);
+        Integer offset = Integer.parseInt(games.getFirst().gameID()) - 1;
         try {
-            int gameID = Integer.parseInt(params[0]);
+            gameID = Integer.parseInt(params[0]) + offset;
         } catch (NumberFormatException e) {
             return "Sorry, you entered a word for the gameID and not a number";
         }
-        ChessGame game = new ChessGame();
-        printBoard(game, "BLACK");
-        System.out.println();
-        printBoard(game, "WHITE");
+        ws.joinGame(authToken, gameID);
         return "";
     }
 
     public String redraw(String[] params) {
-        return "not written yet";
+        if (!signedIn) {
+            return "You are not logged in";
+        }
+        if (params.length != 0) {
+            return "incorrect number of arguments";
+        }
+        if (gameID == null || !gamePlay) {
+            return "you are not currently in a game and cannot redraw the board";
+        }
+        return "";
     }
 
     public String leaveGame(String[] params) {
-        return "not written yet";
+        if (!signedIn) {
+            return "You are not logged in";
+        }
+        if (params.length != 0) {
+            return "incorrect number of arguments";
+        }
+        if (gameID == null || !gamePlay) {
+            return "you are not currently in a game and cannot leave";
+        }
+        ws.leaveGame(authToken, gameID);
+        gamePlay = false;
+        gameID = null;
+        return "You have left the game";
     }
 
     public String makeMove(String[] params) {
-        return "not written yet";
+        if (!signedIn) {
+            return "You are not logged in";
+        }
+        if (gameID == null || !gamePlay) {
+            return "you are not currently in a game and cannot make a move";
+        }
+        if (params.length != 4 || params.length != 5) {
+            return "incorrect number of arguments";
+        }
+        int startX;
+        int startY;
+        int endX;
+        int endY;
+        String promotion = null;
+        try {
+            startX = Integer.parseInt(params[0]);
+            startY = Integer.parseInt(params[1]);
+            endX = Integer.parseInt(params[2]);
+            endY = Integer.parseInt(params[3]);
+            if (params.length == 5) {
+                promotion = params[4].toUpperCase();
+            }
+        } catch (NumberFormatException e) {
+            return "Sorry, you entered a word for something that's supposed to be a number";
+        }
+        ChessPosition startPosition = new ChessPosition(startY, startX);
+        ChessPosition endPosition = new ChessPosition(endY, endX);
+        ChessPiece.PieceType pieceType = null;
+        switch (promotion) {
+            case "ROOK" -> pieceType = ChessPiece.PieceType.ROOK;
+            case "KNIGHT" -> pieceType = ChessPiece.PieceType.KNIGHT;
+            case "BISHOP" -> pieceType = ChessPiece.PieceType.BISHOP;
+            case "KING" -> pieceType = ChessPiece.PieceType.KING;
+            default -> pieceType = null;
+        }
+        ChessMove move = new ChessMove(startPosition, endPosition, pieceType);
+        ws.makeMove(authToken, gameID, move);
+        return "";
     }
 
     public String resign(String[] params) {
+        if (!signedIn) {
+            return "You are not logged in";
+        }
+        if (params.length != 0) {
+            return "incorrect number of arguments";
+        }
+        if (gameID == null || !gamePlay) {
+            return "you are not currently in a game and cannot leave";
+        }
+        ws.resign(authToken, gameID);
         gamePlay = false;
-        return "not written yet";
+        gameID = null;
+        return "";
     }
 
     public String highlight(String[] params) {
+        if (!signedIn) {
+            return "You are not logged in";
+        }
+        if (gameID == null || !gamePlay) {
+            return "you are not currently in a game and cannot highlight moves";
+        }
         return "not written yet";
     }
 
@@ -220,6 +296,9 @@ public class Client {
         if (gamePlay) {
             gamePlay = false;
             resign(params);
+        }
+        if (signedIn) {
+            logout(params);
         }
         return "quit";
     }
@@ -241,9 +320,9 @@ public class Client {
                     one of the following commands
                     redraw
                     leave
-                    makeMove
+                    makeMove <startX> <startY> <endX> <endY> <promotion(optional)>
                     resign
-                    highlight
+                    highlight <startX> <startY>
                     help
                     """;
         }
@@ -261,96 +340,4 @@ public class Client {
                 """;
     }
 
-    public static void printBoard(ChessGame game, String bottomColor) {
-        ArrayList<String> boardString = makeRows(game.getBoard(), bottomColor);
-        if (bottomColor.equals("BLACK")) {
-            System.out.println(SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK + SET_TEXT_BOLD +
-                    "    h  g  f  e  d  c  b  a    " + RESET_BG_COLOR);
-            for (String row : boardString) {
-                System.out.print(row);
-            }
-            System.out.println(SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK + SET_TEXT_BOLD +
-                    "    h  g  f  e  d  c  b  a    " + RESET_BG_COLOR);
-            System.out.println(RESET_BG_COLOR + RESET_TEXT_COLOR);
-        }
-        if (bottomColor.equals("WHITE")) {
-            System.out.println(SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK + SET_TEXT_BOLD +
-                    "    a  b  c  d  e  f  g  h    " + RESET_BG_COLOR);
-            int currentRow = boardString.size() - 1;
-            while (currentRow >= 0) {
-                System.out.print(boardString.get(currentRow));
-                currentRow--;
-            }
-            System.out.println(SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK + SET_TEXT_BOLD +
-                    "    a  b  c  d  e  f  g  h    " + RESET_BG_COLOR);
-            System.out.println(RESET_BG_COLOR + RESET_TEXT_COLOR);
-        }
-    }
-
-    public static ArrayList<String> makeRows(ChessBoard board, String bottomColor) {
-        ArrayList<String> rowArray = new ArrayList<>();
-        int rowNum = 1;
-        boolean isLight = true;
-        if (bottomColor.equals("WHITE")) {
-            isLight = false;
-        }
-        for (ChessPosition[] row : board.getSpaces()) {
-            StringBuilder builder = new StringBuilder();
-            builder.append(SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK + " " + rowNum + " ");
-            if (bottomColor.equals("BLACK")) {
-                ChessPosition[] reverseRow = new ChessPosition[row.length];
-                for (int i = 0; i <= 7; i++) {
-                    reverseRow[i] = row[7 - i];
-                }
-                buildRow(reverseRow, builder, isLight);
-            }
-            else {
-                buildRow(row, builder, isLight);
-            }
-            builder.append(SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK + " " + rowNum + " " + RESET_BG_COLOR + "\n");
-            if (isLight) {
-                isLight = false;
-            }
-            else {
-                isLight = true;
-            }
-            rowNum++;
-            String finishedRow = builder.toString();
-            rowArray.add(finishedRow);
-        }
-        return rowArray;
-    }
-
-    public static void buildRow(ChessPosition[] row, StringBuilder builder, boolean isLight) {
-        String onSquare = "   ";
-        for (ChessPosition square : row) {
-            ChessPiece piece = square.getPiece();
-            String pieceColorName = "";
-            if (piece != null) {
-                ChessPiece.PieceType pieceName = piece.getPieceType();
-                ChessGame.TeamColor pieceColor = piece.getTeamColor();
-                switch (pieceName) {
-                    case KING -> onSquare = " K ";
-                    case QUEEN -> onSquare = " Q ";
-                    case BISHOP -> onSquare = " B ";
-                    case KNIGHT -> onSquare = " N ";
-                    case ROOK -> onSquare = " R ";
-                    case PAWN -> onSquare = " P ";
-                }
-                switch (pieceColor) {
-                    case WHITE -> pieceColorName = SET_TEXT_COLOR_WHITE;
-                    case BLACK -> pieceColorName = SET_TEXT_COLOR_RED;
-                }
-            } else {
-                onSquare = "   ";
-            }
-            if (isLight) {
-                builder.append(SET_BG_COLOR_LIGHT_GREY + pieceColorName + onSquare);
-                isLight = false;
-            } else {
-                builder.append(SET_BG_COLOR_DARK_GREY + pieceColorName + onSquare);
-                isLight = true;
-            }
-        }
-    }
 }
