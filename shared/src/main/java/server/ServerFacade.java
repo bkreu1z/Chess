@@ -64,13 +64,14 @@ public class ServerFacade {
         makeRequest("POST", path, request, CreateResult.class, authToken);
     }
 
-    public void joinGame(String authToken, String gameID, String playerColor) {
+    public String joinGame(String authToken, String gameID, String playerColor) {
         String path = "/game";
         JoinRequest request = new JoinRequest(authToken, playerColor, gameID);
         JoinResult result = (JoinResult)makeRequest("PUT", path, request, JoinResult.class, authToken);
         if (result == null) {
-            System.out.println("Sorry, that color is already taken");
+            return "Sorry, that color is already taken";
         }
+        else return null;
     }
 
     private Record makeRequest(String method, String path, Object request, Class<? extends Record> responseClass, String header) {

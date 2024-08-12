@@ -164,7 +164,10 @@ public class Client {
             playerColor = params[1].toUpperCase();
             notificationHandler.setPlayerColor(playerColor);
             gameID = gameNumber + offset;
-            server.joinGame(authToken, passNumber, playerColor);
+            String goodJoin = server.joinGame(authToken, passNumber, playerColor);
+            if (goodJoin != null) {
+                return goodJoin;
+            }
             ws.joinGame(authToken, gameID);
             gamePlay = true;
             return String.format("You have joined the game as %s", playerColor);
@@ -279,7 +282,7 @@ public class Client {
             ws.resign(authToken, gameID);
             gamePlay = false;
             gameID = null;
-            notificationHandler.setPlayerColor(null);
+            notificationHandler.setPlayerColor("");
         }
         return "";
     }
@@ -301,6 +304,9 @@ public class Client {
             return "sorry, you passed in a number instead of a word";
         }
         ChessGame game = notificationHandler.getGame();
+        if (game.getTeamTurn() != game.getBoard().getPiece(startPosition).getTeamColor()) {
+            return "It is not that team's turn";
+        }
         Collection<ChessMove> validMoves = game.validMoves(startPosition);
         Collection<ChessPosition> validEnds = new HashSet<>();
         for (ChessMove move : validMoves) {

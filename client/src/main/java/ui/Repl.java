@@ -15,7 +15,7 @@ import static ui.EscapeSequences.*;
 import static ui.EscapeSequences.SET_BG_COLOR_DARK_GREY;
 
 public class Repl implements NotificationHandler {
-    public String playerColor;
+    public String playerColor = "";
     public ChessGame game;
 
     private final Client client;
