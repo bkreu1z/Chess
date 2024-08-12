@@ -175,6 +175,30 @@ public class SQLGameDAO implements GameInterface {
         return null;
     }
 
+    public String getPlayerName(String gameID, String playerColor) throws DataAccessException {
+        var statement = "SELECT * FROM games WHERE id = \"" + gameID + "\"";
+        String whiteUsername = null;
+        String blackUsername = null;
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement(statement)) {
+                try (var rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        whiteUsername = rs.getString("WhiteUsername");
+                        blackUsername = rs.getString("BlackUsername");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException("could not get player color");
+        }
+        if (playerColor.equals("WHITE")) {
+            return whiteUsername;
+        } else if (playerColor.equals("BLACK")) {
+            return blackUsername;
+        }
+        return null;
+    }
+
     public ChessGame makeMove(String gameID, ChessMove move, String username) throws DataAccessException {
         ChessGame game = getGameByID(gameID);
         String playerColor = getPlayerColor(gameID, username);

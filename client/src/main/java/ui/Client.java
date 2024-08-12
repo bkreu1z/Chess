@@ -221,6 +221,7 @@ public class Client {
         ws.leaveGame(authToken, gameID);
         gamePlay = false;
         gameID = null;
+        notificationHandler.setPlayerColor("");
         return "You have left the game";
     }
 
@@ -228,11 +229,14 @@ public class Client {
         if (!signedIn) {
             return "You are not logged in";
         }
-        if (gameID == null || !gamePlay) {
+        if (gameID == null) {
             return "you are not currently in a game and cannot make a move";
         }
         if (params.length != 4 && params.length != 5) {
             return "incorrect number of arguments";
+        }
+        if (!gamePlay) {
+            return "you have resigned and cannot make a move";
         }
         int startX;
         int startY;
@@ -280,10 +284,8 @@ public class Client {
         String line = scanner.nextLine();
         if (line.equalsIgnoreCase("yes")) {
             ws.resign(authToken, gameID);
-            gamePlay = false;
-            gameID = null;
-            notificationHandler.setPlayerColor("");
         }
+        gamePlay = false;
         return "";
     }
 
@@ -322,6 +324,7 @@ public class Client {
         }
         if (gamePlay) {
             gamePlay = false;
+            gameID = null;
             resign(params);
         }
         if (signedIn) {

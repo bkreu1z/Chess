@@ -71,11 +71,23 @@ public class WebSocketHandler {
                     connections.singleUserBroadcast(username, boardNotification);
 
                     boolean checkmate = false;
-                    if (gameDAO.getPlayerColor(Integer.toString(gameID), username).equals("WHITE")) {
+                    if (gameDAO.getPlayerColor(Integer.toString(gameID), username).equals("BLACK")) {
                         checkmate = game.isInCheckmate(ChessGame.TeamColor.BLACK);
                     }
-                    else if (gameDAO.getPlayerColor(Integer.toString(gameID), username).equals("BLACK")) {
+                    else if (gameDAO.getPlayerColor(Integer.toString(gameID), username).equals("WHITE")) {
                         checkmate = game.isInCheckmate(ChessGame.TeamColor.WHITE);
+                    }
+                    String checkMessage = "none";
+                    if (game.isInCheck(ChessGame.TeamColor.WHITE)) {
+                        checkMessage = String.format("%s is check", gameDAO.getPlayerName(Integer.toString(gameID), "WHITE"));
+                    }
+                    else if (game.isInCheck(ChessGame.TeamColor.BLACK)) {
+                        checkMessage = String.format("%s is check", gameDAO.getPlayerName(Integer.toString(gameID), "BLACK"));
+                    }
+                    if (!checkMessage.equals("none")) {
+                        var checkNotification = new NotificationMessage(checkMessage);
+                        connections.broadcast(username, checkNotification, gameID);
+                        connections.singleUserBroadcast(username, checkNotification);
                     }
                     if (checkmate) {
                         String winMessage = String.format("%s has won the game", username);
