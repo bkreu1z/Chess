@@ -6,8 +6,7 @@ import server.ServerFacade;
 import ui.websocket.NotificationHandler;
 import ui.websocket.WebSocketFacade;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 
 public class Client {
     private final ServerFacade server;
@@ -202,6 +201,7 @@ public class Client {
         if (gameID == null || !gamePlay) {
             return "you are not currently in a game and cannot redraw the board";
         }
+        notificationHandler.redrawBoard();
         return "";
     }
 
@@ -228,7 +228,7 @@ public class Client {
         if (gameID == null || !gamePlay) {
             return "you are not currently in a game and cannot make a move";
         }
-        if (params.length != 4 || params.length != 5) {
+        if (params.length != 4 && params.length != 5) {
             return "incorrect number of arguments";
         }
         int startX;
@@ -275,6 +275,7 @@ public class Client {
         ws.resign(authToken, gameID);
         gamePlay = false;
         gameID = null;
+        notificationHandler.setPlayerColor(null);
         return "";
     }
 
@@ -285,7 +286,23 @@ public class Client {
         if (gameID == null || !gamePlay) {
             return "you are not currently in a game and cannot highlight moves";
         }
-        return "not written yet";
+        if (params.length != 0) {
+            return "incorrect number of arguments";
+        }
+        ChessPosition startPosition = null;
+        try {
+            startPosition = new ChessPosition(Integer.parseInt(params[1]), Integer.parseInt(params[0]));
+        } catch (NumberFormatException e) {
+            return "sorry, you passed in a number instead of a word";
+        }
+        ChessGame game = notificationHandler.getGame();
+        Collection<ChessMove> validMoves = game.validMoves(startPosition);
+        Collection<ChessPosition> validEnds = new HashSet<>();
+        for (ChessMove move : validMoves) {
+            validEnds.add(move.getEndPosition());
+        }
+        notificationHandler.printHighlight(validEnds);
+        return "";
     }
 
     public String quit(String[] params) {
