@@ -17,6 +17,8 @@ import static ui.EscapeSequences.*;
 import static ui.EscapeSequences.SET_BG_COLOR_DARK_GREY;
 
 public class Repl implements NotificationHandler {
+    public String playerColor;
+
     private final Client client;
 
     public Repl(String serverUrl) {
@@ -59,10 +61,18 @@ public class Repl implements NotificationHandler {
         if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.LOAD_GAME) {
             LoadGameMessage loadGameMessage = (LoadGameMessage) serverMessage;
             ChessGame gameBoard = loadGameMessage.getGame();
-            printBoard(gameBoard, "WHITE");
-            System.out.println("GameMessage");
+            if (playerColor.equals("BLACK")) {
+                printBoard(gameBoard, "BLACK");
+            } else {
+                printBoard(gameBoard, "WHITE");
+            }
         }
         System.out.print(">>>");
+    }
+
+    @Override
+    public void setPlayerColor(String playerColor) {
+        this.playerColor = playerColor;
     }
 
     public static void printBoard(ChessGame game, String bottomColor) {

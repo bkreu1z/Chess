@@ -9,9 +9,6 @@ import ui.websocket.WebSocketFacade;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static ui.EscapeSequences.*;
-import static ui.EscapeSequences.RESET_BG_COLOR;
-
 public class Client {
     private final ServerFacade server;
     private final String serverUrl;
@@ -166,6 +163,7 @@ public class Client {
             }
             String passNumber = Integer.toString(gameNumber + offset);
             playerColor = params[1].toUpperCase();
+            notificationHandler.setPlayerColor(playerColor);
             gameID = gameNumber + offset;
             server.joinGame(authToken, passNumber, playerColor);
             ws.joinGame(authToken, gameID);
@@ -190,6 +188,7 @@ public class Client {
             return "Sorry, you entered a word for the gameID and not a number";
         }
         ws.joinGame(authToken, gameID);
+        gamePlay = true;
         return "";
     }
 
