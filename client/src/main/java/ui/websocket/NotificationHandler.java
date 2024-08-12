@@ -8,7 +8,7 @@ import websocket.messages.ServerMessage;
 import java.util.Collection;
 
 public interface NotificationHandler {
-    public String playercolor = null;
+    public String playerColor = null;
     public ChessGame game = null;
 
     void notify(ServerMessage serverMessage);

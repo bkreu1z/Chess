@@ -87,7 +87,6 @@ public class WebSocketFacade extends Endpoint {
         try {
             var action = new MakeMoveCommand(authToken, gameID, move);
             this.session.getBasicRemote().sendText(new Gson().toJson(action));
-            this.session.close();
         } catch (IOException e) {
             System.out.println("problem in WebSocketFacade");
             System.out.println(e.getMessage());

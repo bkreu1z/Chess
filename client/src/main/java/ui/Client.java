@@ -42,7 +42,7 @@ public class Client {
                 case "observe" -> observeGame(params);
                 case "redraw" -> redraw(params);
                 case "leave" -> leaveGame(params);
-                case "makeMove" -> makeMove(params);
+                case "makemove" -> makeMove(params);
                 case "resign" -> resign(params);
                 case "highlight" -> highlight(params);
                 case "quit" -> quit(params);
@@ -235,7 +235,7 @@ public class Client {
         int startY;
         int endX;
         int endY;
-        String promotion = null;
+        String promotion = "";
         try {
             startX = Integer.parseInt(params[0]);
             startY = Integer.parseInt(params[1]);
@@ -272,10 +272,15 @@ public class Client {
         if (gameID == null || !gamePlay) {
             return "you are not currently in a game and cannot leave";
         }
-        ws.resign(authToken, gameID);
-        gamePlay = false;
-        gameID = null;
-        notificationHandler.setPlayerColor(null);
+        System.out.println("Are you sure you would like to resign? Yes/No");
+        Scanner scanner = new Scanner(System.in);
+        String line = scanner.nextLine();
+        if (line.equalsIgnoreCase("yes")) {
+            ws.resign(authToken, gameID);
+            gamePlay = false;
+            gameID = null;
+            notificationHandler.setPlayerColor(null);
+        }
         return "";
     }
 
@@ -286,7 +291,7 @@ public class Client {
         if (gameID == null || !gamePlay) {
             return "you are not currently in a game and cannot highlight moves";
         }
-        if (params.length != 0) {
+        if (params.length != 2) {
             return "incorrect number of arguments";
         }
         ChessPosition startPosition = null;

@@ -50,12 +50,10 @@ public class Repl implements NotificationHandler {
         if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.ERROR) {
             ErrorMessage errorMessage = (ErrorMessage) serverMessage;
             System.out.println(errorMessage.getErrorMessage());
-            System.out.println("ErrorMessage");
         }
         if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.NOTIFICATION) {
             NotificationMessage notificationMessage = (NotificationMessage) serverMessage;
             System.out.println(notificationMessage.getNotificationMessage());
-            System.out.println("NotificationMessage");
         }
         if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.LOAD_GAME) {
             LoadGameMessage loadGameMessage = (LoadGameMessage) serverMessage;
@@ -100,6 +98,7 @@ public class Repl implements NotificationHandler {
 
     public static void printBoard(ChessGame game, String bottomColor, Collection<ChessPosition> validMoves) {
         ArrayList<String> boardString = makeRows(game.getBoard(), bottomColor, validMoves);
+        System.out.println("\n");
         if (bottomColor.equals("BLACK")) {
             System.out.println(SET_BG_COLOR_WHITE + SET_TEXT_COLOR_BLACK + SET_TEXT_BOLD +
                     "    h  g  f  e  d  c  b  a    " + RESET_BG_COLOR);
