@@ -8,8 +8,8 @@ import websocket.messages.ServerMessage;
 import java.util.Collection;
 
 public interface NotificationHandler {
-    public String playerColor = null;
-    public ChessGame game = null;
+    public String PLAYER_COLOR = null;
+    public ChessGame GAME = null;
 
     void notify(ServerMessage serverMessage);
 

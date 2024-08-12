@@ -71,7 +71,9 @@ public class ServerFacade {
         if (result == null) {
             return "Sorry, that color is already taken";
         }
-        else return null;
+        else {
+            return null;
+        }
     }
 
     private Record makeRequest(String method, String path, Object request, Class<? extends Record> responseClass, String header) {
